@@ -2,6 +2,7 @@
 ## swagger2-postman-generator 모듈을 활용한 Postman collection provider
 
 - Postman collection 단위를 개인에게 초기 셋업하기 위해 사용하기 위함
+- [데모사이트 : http://magoktqa.net:9900](http://magoktqa.net:9900/)
 
 ## Feature
 - swagger를 통한 collection생성
