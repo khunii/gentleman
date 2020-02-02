@@ -50,7 +50,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                 <p id="mdmsg"></p>
+                    <p id="mdmsg"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -88,8 +88,65 @@
                 },
                 error: function (req, status, err) {
                     $('#exampleModalCenter').on('show.bs.modal', function () {
-                        $('#exampleModalCenterTitle').text('작업 오류('+req.status+')');
+                        $('#exampleModalCenterTitle').text('작업 오류(' + req.status + ')');
                         $('#mdmsg').html(req.responseText);
+                    })
+                    $('#exampleModalCenter').modal('toggle');
+                }
+
+            })
+        })
+        $('#gen_old').click(function () {
+            //var gentleman = { author: $('#author').val(), surl: $('#surl').val() };
+            var surl = $('#surl').val();
+            $.ajax({
+                url: surl,
+                type: "GET",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+                    xhr.setRequestHeader("Access-Control-Allow-Headers", "origin, x-requested-with, content-type, accept");
+                },
+                success: function (result) {
+                    var swaggerJson = result;
+                    console.log(swaggerJson);
+                    var gentleman = { author: $('#author').val(), swgrJson: swaggerJson };
+                    $.ajax({
+                        url: "http://localhost:9900/gentleman/fromjson",
+                        type: "POST",
+                        data: gentleman,
+                        dataType: "json",
+                        success: function (result) {
+                            var blob = new Blob([JSON.stringify(result.collection)]);
+                            var link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = result.collection.name + ".json";
+                            link.click();
+                            var blob2 = new Blob([JSON.stringify(result.env)]);
+                            var link2 = document.createElement('a');
+                            link2.href = window.URL.createObjectURL(blob2);
+                            link2.download = result.env.name + ".json";
+                            link2.click();
+
+                            $('#exampleModalCenter').on('show.bs.modal', function () {
+                                $('#exampleModalCenterTitle').text('작업 완료');
+                                $('#mdmsg').html('Collection이 생성되어 다운로드 되었습니다.');
+                            })
+                            $('#exampleModalCenter').modal('toggle');
+
+                        },
+                        error: function (req, status, err) {
+                            $('#exampleModalCenter').on('show.bs.modal', function () {
+                                $('#exampleModalCenterTitle').text('작업 오류(' + req.status + ')');
+                                $('#mdmsg').html(req.responseText);
+                            })
+                            $('#exampleModalCenter').modal('toggle');
+                        }
+                    })
+                },
+                error: function (req, status, err) {
+                    $('#exampleModalCenter').on('show.bs.modal', function () {
+                        $('#exampleModalCenterTitle').text('작업 오류(400)');
+                        $('#mdmsg').html('Swagger URL 을 정확히 입력해 주세요');
                     })
                     $('#exampleModalCenter').modal('toggle');
                 }
