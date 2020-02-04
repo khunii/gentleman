@@ -71,7 +71,26 @@
 
     <script>
         $('#listApi').click(function () {
-            $(location).attr('href','/listapi');
+            //임시로 fromJson아닌것으로 설정
+            //$(location).attr('href','/listapi');
+            var gentleman = { author: $('#author').val(), surl: $('#surl').val() };
+            $.ajax({
+                url: "http://localhost:9900/gentleman/listapi",
+                type: "POST",
+                data: gentleman,
+                dataType: "json",
+                // success: function (result) {
+                //     console.log(result);
+                // },
+                // error: function (req, status, err) {
+                //     $('#exampleModalCenter').on('show.bs.modal', function () {
+                //         $('#exampleModalCenterTitle').text('작업 오류(' + req.status + ')');
+                //         $('#mdmsg').html(req.responseText);
+                //     })
+                //     $('#exampleModalCenter').modal('toggle');
+                // }
+
+            })
         })
         $('#genAll_old').click(function () {
             var gentleman = { author: $('#author').val(), surl: $('#surl').val() };

@@ -157,6 +157,13 @@ const generateCollectionFromJson = function (author, swaggerJson) {
     return pmanCollection;
 }
 
+const listapi = function(req, res){
+    console.log("Hello listApi!!!!")
+    //todo
+    //generage된 json에서 item 추출하여 아래에 전달필요.
+    res.render('myapi.ejs');
+}
+
 const index = function (req, res) {
     res.render('index.html');
 }
@@ -231,4 +238,4 @@ const generateFromJson = function (req, res) {
 }
 
 
-module.exports = { index, generate, generateFromJson };
+module.exports = { index, generate, generateFromJson, listapi };

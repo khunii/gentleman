@@ -27,7 +27,7 @@
     </div>  -->
 
     <div class="accordion form-signin" id="accordionApi">
-        <% for(let i = 0; i < folder.length; i++){%>
+        <!-- <% //for(var i = 0; i < folder.length; i++){ %> -->
          <!-- 여기가 상위 item[i].name 순환시작 -->
          <div class="card">
             <div class="card-header" id="headingOne">
@@ -42,7 +42,7 @@
                     </div>
                 </h5>
             </div>
-            <% for(let j = folder[i].item.length; j++){ %>
+            <!-- <% //for(var j =0 ; j < folder[i].item.length; j++){ %> -->
     
             <!-- 여기가 item[i].item[0~n]까지 반복시작 -->
             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionApi">
@@ -52,11 +52,11 @@
                 </div> 
             </div>
             <!-- 여기가 item[i].item[0~n]까지 반복종료 -->
-            <%}%>
+            <!-- <% //} %> -->
         </div>
       </div>
         <!-- 여기가 상위 item[i].name 순환종료 -->           
-        <%}%>
+        <!-- <% //} %> -->
 
 
 
