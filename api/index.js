@@ -7,4 +7,26 @@ router.get('/', (req, res)=>{
     res.render('index.html');
 
 });
+
+router.get('/new', (req, res)=>{
+    //todo
+    //페이지 표시 하기
+    res.render('new.html');
+
+});
+
+router.get('/listapi', (req, res)=>{
+    //todo
+    //페이지 표시 하기
+    res.render('myapi.html');
+
+});
+
+router.get('/append', (req, res)=>{
+    //todo
+    //페이지 표시 하기
+    res.render('append.html');
+
+});
+
 module.exports = router;

@@ -19,16 +19,16 @@ let getToken = true;
   
 if (pm.request.headers.get("Authorization")){  
     //environment check  
-    if (!pm.environment.get("jwt_expired_time") || !pm.environment.get("jwt")){  
-        console.log("jwt or jwt expired variable missed!!");  
-        //  
-    }else if (pm.environment.get("jwt_expired_time") <= (new Date()).getTime()){  
-        console.log("jwt expired!!");  
-        //  
-    }else{  
-        console.log("jwt OK")  
-        getToken = false;  
-    }  
+    // if (!pm.environment.get("jwt_expired_time") || !pm.environment.get("jwt")){  
+    //     console.log("jwt or jwt expired variable missed!!");  
+    //     //  
+    // }else if (pm.environment.get("jwt_expired_time") <= (new Date()).getTime()){  
+    //     console.log("jwt expired!!");  
+    //     //  
+    // }else{  
+    //     console.log("jwt OK")  
+    //     getToken = false;  
+    // }  
       
     //if expired , reassign  
     if (getToken){  

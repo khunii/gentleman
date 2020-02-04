@@ -10,6 +10,7 @@ var fs = require('fs');
 var swag2pman = require("swagger2-postman-generator");
 var repository = require('./gen.db');
 var request = require('request');
+var transformer = require('postman-collection-transformer');
 
 const generageEnvironment = (author, swaggerUrl, envName) => {
     var pmanEnv =
@@ -96,7 +97,25 @@ const generateCollection = function (author, swaggerUrl) {
             }
         }]
     })
-    return pmanCollection;
+
+    //transform v2.0
+    var options = {
+        inputVersion: '1.0.0',
+        outputVersion: '2.0.0',
+        retainIds: true
+    };
+
+    var testConv = transformer.convert(pmanCollection, options, function(err, converted){
+        if (!err){
+            console.log(JSON.stringify(converted));
+            return converted;
+        }
+    })
+
+    console.log('testconv ='+JSON.stringify(testConv));
+    return testConv;
+
+    // return pmanCollection;
 }
 
 const generateCollectionFromJson = function (author, swaggerJson) {
@@ -105,7 +124,8 @@ const generateCollectionFromJson = function (author, swaggerJson) {
 
     var pmanCollection =
         swag2pman.convertSwagger()
-            .fromJson(JSON.stringify(swaggerJson))
+            // .fromJson(JSON.stringify(swaggerJson))
+            .fromJson(swaggerJson)
             .toPostmanCollection({
                 prettyPrint: true
             });
@@ -159,6 +179,7 @@ const generate = function (req, res) {
                         res.status(400).end("이미 생성한 Jira 로그인 ID입니다. 다른 로그인ID로 생성하세요");
                     } else {
                         var collectionJson = generateCollection(author, swaggerUrl);
+                        console.log(JSON.stringify(collectionJson));
                         var envJson = generageEnvironment(author, swaggerUrl, 'gsretail_rest_env')
                         var newUser = {
                             userId: author
@@ -181,6 +202,9 @@ const generate = function (req, res) {
 const generateFromJson = function (req, res) {
     const author = req.body.author;
     const swaggerJson = req.body.swgrJson;
+
+    console.log('Hello generate from json');
+    console.log(swaggerJson);
 
     if (!author || !swaggerJson) {
         res.status(400).end("Jira 로그인ID 와 swaggerUrl 을 입력하세요!!!");

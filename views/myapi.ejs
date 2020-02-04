@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link href="/css/signin.css" rel="stylesheet">
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+        });
+    </script>
+    <title>Gentleman</title>
+</head>
+
+<body>
+   <!-- <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="customCheck1">
+        <label class="custom-control-label" for="customCheck1">Check this custom checkbox</label>
+    </div>  -->
+
+    <div class="accordion form-signin" id="accordionApi">
+        <% for(let i = 0; i < folder.length; i++){%>
+         <!-- 여기가 상위 item[i].name 순환시작 -->
+         <div class="card">
+            <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="customCheck5">
+                        <label class="custom-control-label" for="customCheck5">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                auth
+                            </button>
+                        </label>
+                    </div>
+                </h5>
+            </div>
+            <% for(let j = folder[i].item.length; j++){ %>
+    
+            <!-- 여기가 item[i].item[0~n]까지 반복시작 -->
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionApi">
+                <div class="custom-control custom-checkbox ">
+                    <input type="checkbox" class="custom-control-input" id="customCheck1">
+                    <label class="custom-control-label" for="customCheck1">GET /fo/users getUserlist</label>
+                </div> 
+            </div>
+            <!-- 여기가 item[i].item[0~n]까지 반복종료 -->
+            <%}%>
+        </div>
+      </div>
+        <!-- 여기가 상위 item[i].name 순환종료 -->           
+        <%}%>
+
+
+
+    <script>
+    </script>
+</body>
+
+</html>
