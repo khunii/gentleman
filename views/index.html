@@ -60,7 +60,7 @@
     </div>
 
     <script>
-        $('#gen').click(function () {
+        $('#gen_old').click(function () {
             var gentleman = { author: $('#author').val(), surl: $('#surl').val() };
             $.ajax({
                 url: "http://localhost:9900/gentleman",
@@ -96,16 +96,16 @@
 
             })
         })
-        $('#gen_old').click(function () {
+        $('#gen').click(function () {
             //var gentleman = { author: $('#author').val(), surl: $('#surl').val() };
             var surl = $('#surl').val();
             $.ajax({
                 url: surl,
                 type: "GET",
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
-                    xhr.setRequestHeader("Access-Control-Allow-Headers", "origin, x-requested-with, content-type, accept");
-                },
+                // beforeSend: function (xhr) {
+                //     xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+                //     xhr.setRequestHeader("Access-Control-Allow-Headers", "origin, x-requested-with, content-type, accept");
+                // },
                 success: function (result) {
                     var swaggerJson = result;
                     console.log(swaggerJson);
