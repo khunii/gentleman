@@ -26,19 +26,73 @@
         <br />
         <br />
         <br />
-
-		<div class="container">
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">API를 테스트 하기 위한 Collection을 생성하세요</h4>
+            <p>Swagger를 이용하여 Postman Collection을 생성합니다.</p>
+            <hr>
+            <p class="mb-0">개발자의 Jira로그인 ID와 Swagger-ui 상단에 있는 api-docs url을 필요로 합니다.</p>
+        </div>
+        <input type="text" id="author" class="form-control" placeholder="Jira 로그인 아이디" required autofocus>
+        <input type="text" id="surl" class="form-control" placeholder="Swagger api-docs URL"" required>
+        <br/>
+		<!-- <div class="container"> -->
 			<div class="row">
 				<div class="col">
-                    <button type=" button" class="btn btn-lg btn-primary " id="new">Postman Collecton 처음생성</button>
-                    <button type=" button" class="btn btn-lg btn-warning " id="append">기존 Collection에 API추가</button>
+                    <button type=" button" class="btn btn-lg btn-primary btn-block " id="genAll">전체 API 생성</button>
+				</div>
+				<div class="col">
+                    <button type=" button" class="btn btn-lg btn-success btn-block" id="listApi">선택한 API만 생성</button>
 				</div>
 			</div>
-		</div>        
+		<!-- </div>         -->
+        <!-- <button type=" button" class="btn btn-lg btn-primary btn-block" id="gen">Postman Collecton 생성</button> -->
+        <div id="result"></div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="mdmsg"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-<<<<<<< HEAD
-        $('#gen_old').click(function () {
+        $('#listApi').click(function () {
+            //임시로 fromJson아닌것으로 설정
+            //$(location).attr('href','/listapi');
+            var gentleman = { author: $('#author').val(), surl: $('#surl').val() };
+            $.ajax({
+                url: "http://localhost:9900/gentleman/listapi",
+                type: "POST",
+                data: gentleman,
+                dataType: "json",
+                // success: function (result) {
+                //     console.log(result);
+                // },
+                // error: function (req, status, err) {
+                //     $('#exampleModalCenter').on('show.bs.modal', function () {
+                //         $('#exampleModalCenterTitle').text('작업 오류(' + req.status + ')');
+                //         $('#mdmsg').html(req.responseText);
+                //     })
+                //     $('#exampleModalCenter').modal('toggle');
+                // }
+
+            })
+        })
+        $('#genAll_old').click(function () {
             var gentleman = { author: $('#author').val(), surl: $('#surl').val() };
             $.ajax({
                 url: "http://localhost:9900/gentleman",
@@ -49,7 +103,7 @@
                     var blob = new Blob([JSON.stringify(result.collection)]);
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
-                    link.download = result.collection.name + ".json";
+                    link.download = result.collection.info.name + ".json"; //2.0으로 convert한 것 기준으로 변경
                     link.click();
                     var blob2 = new Blob([JSON.stringify(result.env)]);
                     var link2 = document.createElement('a');
@@ -74,7 +128,7 @@
 
             })
         })
-        $('#gen').click(function () {
+        $('#genAll').click(function () {
             //var gentleman = { author: $('#author').val(), surl: $('#surl').val() };
             var surl = $('#surl').val();
             $.ajax({
@@ -85,13 +139,14 @@
                 //     xhr.setRequestHeader("Access-Control-Allow-Headers", "origin, x-requested-with, content-type, accept");
                 // },
                 success: function (result) {
-                    var swaggerJson = result;
+                    var swaggerJson = JSON.stringify(result);
                     console.log(swaggerJson);
                     var gentleman = { author: $('#author').val(), swgrJson: swaggerJson };
                     $.ajax({
                         url: "http://localhost:9900/gentleman/fromjson",
                         type: "POST",
                         data: gentleman,
+                        //contentType:"application/json; charset=utf-8",
                         dataType: "json",
                         success: function (result) {
                             var blob = new Blob([JSON.stringify(result.collection)]);
@@ -130,13 +185,6 @@
                 }
 
             })
-=======
-        $('#new').click(function () {
-            $(location).attr('href','/new');
-        })
-        $('#append').click(function () {
-            $(location).attr('href','/append');
->>>>>>> 643ee77951455c199f506dc1d23c332d3ccf6367
         })
     </script>
 </body>

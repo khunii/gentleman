@@ -26,18 +26,54 @@
         <br />
         <br />
         <br />
-
-		<div class="container">
-			<div class="row">
-				<div class="col">
-                    <button type=" button" class="btn btn-lg btn-primary " id="new">Postman Collecton 처음생성</button>
-                    <button type=" button" class="btn btn-lg btn-warning " id="append">기존 Collection에 API추가</button>
-				</div>
-			</div>
-		</div>        
+        <br/>
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">기존 Collection에 선택한 API를 추가합니다.</h4>
+            <p>Collection을 import 후 추가할 API를 선택하세요.</p>
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" id="collection" class="custom-file-input" aria-describedby="button-addon4" required>
+                    <label class="custom-file-label text-left" for="collection">테스트중인 Postman Collection을 선택하세요</label>
+                </div>
+                <div class="input-group-append" id="button-addon4">
+                    <button class="btn btn-secondary" type="button">Import</button>
+                </div>
+            </div>
+            <hr>
+            <p class="mb-0">추가할 API가 있는 Swagger-ui 상단에 있는 api-docs url을 필요로 합니다.</p>
+            <div class="input-group mb3">
+                <input type="text" id="surl" class="form-control" aria-describedby="button-addon2" placeholder="Swagger api-docs URL"" required>
+                <div class="input-group-append" id="button-addon2">
+                    <button class="btn btn-success" type="button">API 리스트요청</button>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <button type=" button" class="btn btn-lg btn-primary btn-block" id="gen">Collecton에 API추가</button>
+        <div id="result"></div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="mdmsg"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-<<<<<<< HEAD
         $('#gen_old').click(function () {
             var gentleman = { author: $('#author').val(), surl: $('#surl').val() };
             $.ajax({
@@ -85,13 +121,14 @@
                 //     xhr.setRequestHeader("Access-Control-Allow-Headers", "origin, x-requested-with, content-type, accept");
                 // },
                 success: function (result) {
-                    var swaggerJson = result;
+                    var swaggerJson = JSON.stringify(result);
                     console.log(swaggerJson);
                     var gentleman = { author: $('#author').val(), swgrJson: swaggerJson };
                     $.ajax({
                         url: "http://localhost:9900/gentleman/fromjson",
                         type: "POST",
                         data: gentleman,
+                        //contentType:"application/json; charset=utf-8",
                         dataType: "json",
                         success: function (result) {
                             var blob = new Blob([JSON.stringify(result.collection)]);
@@ -130,13 +167,6 @@
                 }
 
             })
-=======
-        $('#new').click(function () {
-            $(location).attr('href','/new');
-        })
-        $('#append').click(function () {
-            $(location).attr('href','/append');
->>>>>>> 643ee77951455c199f506dc1d23c332d3ccf6367
         })
     </script>
 </body>
