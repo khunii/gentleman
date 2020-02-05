@@ -6,6 +6,7 @@ router.get('/', controller.index);
 router.post('/', controller.generate);
 router.post('/fromjson', controller.generateFromJson);
 router.post('/listapi', controller.listapi);
+router.post('/checkdupid', controller.checkDupId);
 // router.get('/:id', ctrl.show);
 // router.delete('/:id', ctrl.destroy);
 // router.post('/', ctrl.create);

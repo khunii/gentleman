@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link href="/css/signin.css" rel="stylesheet">
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+        });
+    </script>
+    <title>Gentleman</title>
+</head>
+
+<body>
+    <!-- <div class="accordion form-signin" id="accordionApi">
+         <div class="card">
+            <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="upperCheck"">
+                        <label class="custom-control-label" for="upperCheck">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                test folder
+                            </button>
+                        </label>
+                    </div>
+                </h5>
+            </div>
+    
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionApi">
+                <div class="card-body">
+                        <div class="custom-control custom-checkbox ">
+                        <input type="checkbox" class="custom-control-input" id="customCheck">
+                        <label class="custom-control-label" for="customCheck">GET /fo/users getUserlist</label>
+                        </div>
+                </div> 
+            </div>
+         </div>
+
+         <div class="card">
+            <div class="card-header" id="headingTwo">
+                <h5 class="mb-0">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="upperCheck2"">
+                        <label class="custom-control-label" for="upperCheck2">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                test folder2
+                            </button>
+                        </label>
+                    </div>
+                </h5>
+            </div>
+    
+            <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionApi">
+                <div class="card-body">
+                        <div class="custom-control custom-checkbox ">
+                        <input type="checkbox" class="custom-control-input" id="customCheck2">
+                        <label class="custom-control-label" for="customCheck2">GET /fo/users getUserlist2</label>
+                        </div>
+                </div> 
+            </div>
+         </div>
+
+     </div> -->
+
+     <div class="accordion form-signin" id="accordionExample">
+        <div class="card">
+          <div class="card-header" id="headingOne">
+            <h2 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Collapsible Group Item #1
+              </button>
+            </h2>
+          </div>
+      
+          <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" >
+            <div class="card-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" checked>
+                    <label class="form-check-label" for="defaultCheck1">
+                      Default checkbox
+                    </label>
+                 </div>              
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="headingTwo">
+            <h2 class="mb-0">
+              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Collapsible Group Item #2
+              </button>
+            </h2>
+          </div>
+          <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" >
+            <div class="card-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" checked>
+                    <label class="form-check-label" for="defaultCheck1">
+                      Default checkbox
+                    </label>
+                 </div>              
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="headingThree">
+            <h2 class="mb-0">
+              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Collapsible Group Item #3
+              </button>
+            </h2>
+          </div>
+          <div id="collapseThree" class="collapse show" aria-labelledby="headingThree" >
+            <div class="card-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" checked>
+                    <label class="form-check-label" for="defaultCheck1">
+                      Default checkbox
+                    </label>
+                 </div>              
+            </div>
+          </div>
+        </div>
+      </div>     
+<script>
+    </script>
+</body>
+
+</html>

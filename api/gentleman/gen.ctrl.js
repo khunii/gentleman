@@ -12,6 +12,8 @@ var repository = require('./gen.db');
 var request = require('request');
 var transformer = require('postman-collection-transformer');
 
+
+//함수영역
 const generageEnvironment = (author, swaggerUrl, envName) => {
     var pmanEnv =
         swag2pman.convertSwagger()
@@ -107,12 +109,12 @@ const generateCollection = function (author, swaggerUrl) {
 
     var testConv = transformer.convert(pmanCollection, options, function(err, converted){
         if (!err){
-            console.log(JSON.stringify(converted));
+            //console.log(JSON.stringify(converted));
             return converted;
         }
     })
 
-    console.log('testconv ='+JSON.stringify(testConv));
+    //console.log('testconv ='+JSON.stringify(testConv));
     return testConv;
 
     // return pmanCollection;
@@ -154,16 +156,28 @@ const generateCollectionFromJson = function (author, swaggerJson) {
             }
         }]
     })
-    return pmanCollection;
+    //transform v2.0
+    var options = {
+        inputVersion: '1.0.0',
+        outputVersion: '2.0.0',
+        retainIds: true
+    };
+
+    var testConv = transformer.convert(pmanCollection, options, function(err, converted){
+        if (!err){
+            //console.log(JSON.stringify(converted));
+            return converted;
+        }
+    })
+
+    //console.log('testconv ='+JSON.stringify(testConv));
+    return testConv;
+
+    // return pmanCollection;
 }
 
-const listapi = function(req, res){
-    console.log("Hello listApi!!!!")
-    //todo
-    //generage된 json에서 item 추출하여 아래에 전달필요.
-    res.render('myapi.ejs');
-}
 
+//routing영역(Controller)
 const index = function (req, res) {
     res.render('index.html');
 }
@@ -175,7 +189,7 @@ const generate = function (req, res) {
     console.log('url :' + swaggerUrl);
 
     if (!author || !swaggerUrl) {
-        res.status(400).end("Jira 로그인ID 과 swaggerUrl 을 입력하세요!!!");
+        res.status(400).end("Jira 로그a인ID 과 swaggerUrl 을 입력하세요!!!");
     } else {
         //swagger validation
         request(swaggerUrl, function (error, response, body) {
@@ -186,7 +200,7 @@ const generate = function (req, res) {
                         res.status(400).end("이미 생성한 Jira 로그인 ID입니다. 다른 로그인ID로 생성하세요");
                     } else {
                         var collectionJson = generateCollection(author, swaggerUrl);
-                        console.log(JSON.stringify(collectionJson));
+                        //console.log(JSON.stringify(collectionJson));
                         var envJson = generageEnvironment(author, swaggerUrl, 'gsretail_rest_env')
                         var newUser = {
                             userId: author
@@ -211,7 +225,7 @@ const generateFromJson = function (req, res) {
     const swaggerJson = req.body.swgrJson;
 
     console.log('Hello generate from json');
-    console.log(swaggerJson);
+    //console.log(swaggerJson);
 
     if (!author || !swaggerJson) {
         res.status(400).end("Jira 로그인ID 와 swaggerUrl 을 입력하세요!!!");
@@ -237,5 +251,44 @@ const generateFromJson = function (req, res) {
     }
 }
 
+const listapi = function(req, res){
+    const author = req.body.hAuthor;
+    const swaggerJson = req.body.hSwaggerJson;
 
-module.exports = { index, generate, generateFromJson, listapi };
+    var collectionJson = generateCollectionFromJson(author, swaggerJson);
+    var envJson = generageEnvironmentFromJson(author, swaggerJson, 'gsretail_rest_env');
+
+
+
+    //generate된 json에서 item 추출하여 아래에 전달필요.
+    res.render('myapi.ejs', {
+        collection:collectionJson,
+        folder:collectionJson.item,
+        env:envJson
+    });
+}
+
+const checkDupId = function(req, res){
+    const author = req.body.author;
+
+    if (!author) {
+        res.status(400).end("Jira 로그인ID를 입력하세요!!!");
+    } else {
+        //db load and checkgenerate
+        repository.loadCollection('users', (users) => {
+            if (repository.isDup(users, author)) {
+                res.status(400).end("이미 생성한 Jira 로그인 ID입니다. 다른 로그인ID로 생성하세요");
+            } else {
+                var newUser = {
+                    userId: author
+                }
+                users.insert(newUser);
+                repository.db.saveDatabase();
+                res.end(JSON.stringify({status : 'success'}));
+            }
+        });
+    }
+
+}
+
+module.exports = { index, generate, generateFromJson, listapi, checkDupId };
