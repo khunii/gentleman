@@ -134,6 +134,10 @@
 
         $('#genAll').click(function () {
             var surl = $('#surl').val();
+            if (!surl || !surl === ''){
+                alertModal('URL오류', 'Swagger URL을 입력해 주세요');
+                return;
+            }
             $.ajax({
                 url: surl,
                 type: "GET",
