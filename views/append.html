@@ -30,27 +30,35 @@
         <div class="alert alert-success" role="alert">
             <h4 class="alert-heading">기존 Collection에 선택한 API를 추가합니다.</h4>
             <p>Collection을 import 후 추가할 API를 선택하세요.</p>
-            <div class="input-group">
-                <div class="custom-file">
-                    <input type="file" id="collection" class="custom-file-input" aria-describedby="button-addon4" required>
-                    <label class="custom-file-label text-left" for="collection">테스트중인 Postman Collection을 선택하세요</label>
+            <form method="POST" enctype="multipart/form-data" id="jsonForm">
+                <div class="input-group">
+                    <div class="custom-file">
+                        <input type="file" name="jsonFile" id="jsonFile" class="custom-file-input" aria-describedby="button-addon4" onchange="$('#json-file-name').text($(this).val());"required>
+                        <label id="json-file-name" class="custom-file-label text-left" for="jsonFile">테스트중인 Postman Collection을 선택하세요</label>
+                    </div>
+                    <div class="input-group-append" id="button-addon4">
+                        <button class="btn btn-secondary" type="button" id="import">Import</button>
+                    </div>
                 </div>
-                <div class="input-group-append" id="button-addon4">
-                    <button class="btn btn-secondary" type="button">Import</button>
-                </div>
-            </div>
+            </form>
             <hr>
             <p class="mb-0">추가할 API가 있는 Swagger-ui 상단에 있는 api-docs url을 필요로 합니다.</p>
             <div class="input-group mb3">
                 <input type="text" id="surl" class="form-control" aria-describedby="button-addon2" placeholder="Swagger api-docs URL"" required>
                 <div class="input-group-append" id="button-addon2">
-                    <button class="btn btn-success" type="button">API 리스트요청</button>
+                    <button class="btn btn-success" type="button" id="list-api">API 리스트요청</button>
                 </div>
             </div>
         </div>
         <br/>
-        <button type=" button" class="btn btn-lg btn-primary btn-block" id="gen">Collecton에 API추가</button>
-        <div id="result"></div>
+        <div id="apis" class="text-left"></div>
+        <button type=" button" class="btn btn-lg btn-primary btn-block" id="merge-api" style="display:none">Collecton에 API추가</button>
+        <!-- <div id="result"></div> -->
+        <span id='is-imported' hidden></span>
+        <span id='currCollection' hidden></span>
+        <span id='author' hidden></span>
+        <span id='folders' hidden></span>
+        <!-- <span id='swaggerJson' hidden></span> -->
     </div>
     <!-- Modal -->
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
@@ -74,100 +82,219 @@
     </div>
 
     <script>
-        $('#gen_old').click(function () {
-            var gentleman = { author: $('#author').val(), surl: $('#surl').val() };
+        $('#import').click(function(){
+            //입력받은 collection파일(json)을 서버 전송하여 currCollection과 author 받아오기
+            //validation
+            //file명 비어 있을 때
+            var uploadFile1 = $('#jsonFile').val();
+
+            if (!uploadFile1 || uploadFile1 == ''){
+                alertModal('파일오류', 'Collection 파일을 선택하셔야 합니다.')
+                return;
+            }
+            //file이 json이 아닐때
+            var FileFilter = /\.(json)$/i;
+            if (!uploadFile1.match(FileFilter)) {
+                alertModal('파일오류', 'Collection은 json형식이어야 합니다.');
+                return;
+            }
+
+            //postman파일이 아닌지는 서버에서
+
+            // FormData 객체 생성
+            var form = $('#jsonForm')[0];
+            var formData = new FormData(form);
+
             $.ajax({
-                url: "http://localhost:9900/gentleman",
-                type: "POST",
-                data: gentleman,
-                dataType: "json",
-                success: function (result) {
-                    var blob = new Blob([JSON.stringify(result.collection)]);
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = result.collection.name + ".json";
-                    link.click();
-                    var blob2 = new Blob([JSON.stringify(result.env)]);
-                    var link2 = document.createElement('a');
-                    link2.href = window.URL.createObjectURL(blob2);
-                    link2.download = result.env.name + ".json";
-                    link2.click();
+                    type: "POST",
+                    enctype: 'multipart/form-data',
+                    url: "/gentleman/import",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    timeout: 600000,
+                    success: function (data) {
+                        //Imporing current collection
+                        //$('#currCollection').text(data);
+                        $('#currCollection').text(data);
+                        var description = JSON.parse(data).info.description; //@author 'author's name' 의 형식
+                        if (description.includes('@author')) {
+                            // var author = description.substr(description.lastIndexOf(' '));
+                            var author = $.trim(description.replace('@author', ''));
+                            if (author == '') {
+                                alertModal('Collection작성오류(JIRA아이디 미작성)', 'Collection의 description에 "@author JIRA아이디"를 입력하고 다시 시도하세요');
+                                return;
+                            }
+                            $('#author').text(author);
+                        } else {
+                            alertModal('Collection작성오류(@author태그없음)', 'Collection의 description에 "@author JIRA아이디"를 입력하고 다시 시도하세요');
+                            return;
+                        }
+                        $("#is-imported").text('true');
+                        alertModal('Import완료',author+' 님의 Collection이 import되었습니다.')
+                    },
+                    error: function (req, status, err) {
+                        alertModal('작업 오류(' + req.status + ')', req.responseText)
+                    }
+                });
+        });
 
-                    $('#exampleModalCenter').on('show.bs.modal', function () {
-                        $('#exampleModalCenterTitle').text('작업 완료');
-                        $('#mdmsg').html('Collection이 생성되어 다운로드 되었습니다.');
-                    })
-                    $('#exampleModalCenter').modal('toggle');
-
-                },
-                error: function (req, status, err) {
-                    $('#exampleModalCenter').on('show.bs.modal', function () {
-                        $('#exampleModalCenterTitle').text('작업 오류(' + req.status + ')');
-                        $('#mdmsg').html(req.responseText);
-                    })
-                    $('#exampleModalCenter').modal('toggle');
-                }
-
-            })
-        })
-        $('#gen').click(function () {
-            //var gentleman = { author: $('#author').val(), surl: $('#surl').val() };
-            var surl = $('#surl').val();
+        $('#list-api').click(function () {
+            //-1. import여부 체크
+            if ($('#is-imported').text() != 'true'){
+                alertModal('작업순서오류', '먼저 기존 collection을 import해주세요.');
+                return;
+            }
+            //0. swagger 유효성 체크
+            var vSurl = $('#surl').val();
+            if (!vSurl || !vSurl === ''){
+                alertModal('URL오류', 'Swagger URL을 입력해 주세요');
+                return;
+            }
             $.ajax({
-                url: surl,
+                url: vSurl,
                 type: "GET",
-                // beforeSend: function (xhr) {
-                //     xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
-                //     xhr.setRequestHeader("Access-Control-Allow-Headers", "origin, x-requested-with, content-type, accept");
-                // },
                 success: function (result) {
-                    var swaggerJson = JSON.stringify(result);
-                    console.log(swaggerJson);
-                    var gentleman = { author: $('#author').val(), swgrJson: swaggerJson };
+                    var author = $('#author').text();
+                    var gentleman = { author: author, swaggerJson:JSON.stringify(result)};
                     $.ajax({
-                        url: "http://localhost:9900/gentleman/fromjson",
+                        url: "/gentleman/showapis",
                         type: "POST",
                         data: gentleman,
-                        //contentType:"application/json; charset=utf-8",
                         dataType: "json",
                         success: function (result) {
-                            var blob = new Blob([JSON.stringify(result.collection)]);
-                            var link = document.createElement('a');
-                            link.href = window.URL.createObjectURL(blob);
-                            link.download = result.collection.name + ".json";
-                            link.click();
-                            var blob2 = new Blob([JSON.stringify(result.env)]);
-                            var link2 = document.createElement('a');
-                            link2.href = window.URL.createObjectURL(blob2);
-                            link2.download = result.env.name + ".json";
-                            link2.click();
-
-                            $('#exampleModalCenter').on('show.bs.modal', function () {
-                                $('#exampleModalCenterTitle').text('작업 완료');
-                                $('#mdmsg').html('Collection이 생성되어 다운로드 되었습니다.');
-                            })
-                            $('#exampleModalCenter').modal('toggle');
-
+                            $('#folders').text(JSON.stringify(result.folders));
+                            $('#apis').html(result.html);
+                            if ($('#merge-api').css('display') == 'none'){
+                                $('#merge-api').show();
+                            }
                         },
                         error: function (req, status, err) {
-                            $('#exampleModalCenter').on('show.bs.modal', function () {
-                                $('#exampleModalCenterTitle').text('작업 오류(' + req.status + ')');
-                                $('#mdmsg').html(req.responseText);
-                            })
-                            $('#exampleModalCenter').modal('toggle');
+                            alertModal('작업 오류(' + req.status + ')', req.responseText);
                         }
                     })
+
                 },
                 error: function (req, status, err) {
-                    $('#exampleModalCenter').on('show.bs.modal', function () {
-                        $('#exampleModalCenterTitle').text('작업 오류(400)');
-                        $('#mdmsg').html('Swagger URL 을 정확히 입력해 주세요');
-                    })
-                    $('#exampleModalCenter').modal('toggle');
+                    alertModal('작업 오류(400)', 'Swagger URL 을 정확히 입력해 주세요');
                 }
-
             })
         })
+
+        $('#merge-api').click(function(){
+            var folderJson = JSON.parse($('#folders').text())
+            var collectionJson = JSON.parse($('#currCollection').text());
+            var selectedApiArr = [];
+
+            //1. 체크된 녀석의 _postman_id의 배열 생성
+            $(".form-check-input").each(function() {
+                if(this.checked){
+                    selectedApiArr.push(this.value);
+                }
+            })
+            //2. 체크된 api들 중 기존 콜렉션(collectionJson)에 존재하는 것들의 리스트 생성 후 중복시 알림 후 중단
+            var dupApiArr = [];
+            for (var i = 0; i < collectionJson.item.length; i++) {
+                    var dupSelectedApis = collectionJson.item[i].item.filter(api => {
+                        var folderName = collectionJson.item[i].name;
+                        var itemName = api.name;
+                        var method = api.request.method;
+                        var requestURL = api.request.url.raw;
+                        var realURL = requestURL === undefined ? api.request.url : requestURL;
+                        var pk = folderName + '|' + itemName + '|' + method + '|' + realURL;
+                        return selectedApiArr.includes(pk);
+                    });
+                    dupApiArr = dupApiArr.concat(dupSelectedApis);
+            }
+            
+            if (dupApiArr.length > 0){
+                //중복이 있으면 다시 선택해야 함
+                var msg = '기존에 테스트한 API가 선택되었습니다.' + '<br>';
+                for(var i = 0; i < dupApiArr.length; i++){
+                    //console.log(dupApiArr[i].name + '<br>');
+                    msg  = msg + dupApiArr[i].name + '<br>';
+                }
+                alertModal('API선택 오류', msg);
+                return;
+            }
+
+            //3. Swagger로 변환한 Folder객체들 중 선택된 api를 가지는 folder객체를 골라낸다.
+            for(var i = 0; i < folderJson.length; i++){
+                var selectedItems = folderJson[i].item.filter(api=>{
+                    var folderName = folderJson[i].name;
+                    var itemName = api.name;
+                    var method = api.request.method;
+                    var requestURL = api.request.url.raw;
+                    var realURL = requestURL === undefined ? api.request.url : requestURL;
+                    var pk = folderName + '|' + itemName + '|' + method + '|' + realURL;
+                    return selectedApiArr.includes(pk);
+                });
+                folderJson[i].item = selectedItems;
+            }
+
+            //4. 기존 collection에 존재하는 folder이름 배열 생성
+            var currFolderArrInCollection = [];
+            for (var i = 0; i < collectionJson.item.length; i++) {
+                currFolderArrInCollection.push(collectionJson.item[i].name);
+            }
+
+            //5. 기존 collection에 그냥 add할 folder 추출
+            var appendableFolders = folderJson.filter(folder => {
+                return !currFolderArrInCollection.includes(folder.name);
+            })
+
+            appendableFolders = appendableFolders.filter(folder => {
+                return folder.item.length > 0 ? true : false;
+            })
+
+            //6. 기존 collection에 동일한 folder가 존재하여 api만 삽입해야 할 대상 folder 추출
+            var insertableFolders = folderJson.filter(folder=>{
+                return currFolderArrInCollection.includes(folder.name);
+            })
+
+            //7. merge apis , first insert
+            for (var i = 0 ; i < collectionJson.item.length; i++){
+                for(var j = 0 ; j < insertableFolders.length; j++){
+                    if (collectionJson.item[i].name === insertableFolders[j].name){
+                        collectionJson.item[i].item = collectionJson.item[i].item.concat(insertableFolders[j].item);
+                    }
+                }
+            }
+
+            //8. merge apis, just append folders
+            collectionJson.item = collectionJson.item.concat(appendableFolders);
+
+            //9. download to developer
+            var blob = new Blob([JSON.stringify(collectionJson)]);
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = collectionJson.info.name + ".json"; //2.0으로 convert한 것 기준으로 변경
+            link.click();
+
+            alertModal('작업 완료', 'Collection에 선택한 api가 추가되어 다운로드 되었습니다.')
+            //10. 실수했다면 다시 하라구..^^
+            location.reload();
+        });
+        function checkAllFunc(obj) {
+            var checkStatus = obj.value === 'checked' ? '' : 'checked';
+            var childName = 'check' + obj.id;
+
+            $("[name=" + childName).each(function () {
+                this.checked = checkStatus;
+            })
+
+            obj.value = checkStatus;
+        }
+        function alertModal(title, msg){
+            $('#exampleModalCenter').on('show.bs.modal', function () {
+                        $('#exampleModalCenterTitle').text(title);
+                        $('#mdmsg').html(msg);
+                    })
+                    $('#exampleModalCenter').modal('toggle');
+        }
+
+        
     </script>
 </body>
 

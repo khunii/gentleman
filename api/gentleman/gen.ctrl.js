@@ -11,6 +11,7 @@ var swag2pman = require("swagger2-postman-generator");
 var repository = require('./gen.db');
 var request = require('request');
 var transformer = require('postman-collection-transformer');
+var ejs = require('ejs');
 
 
 //함수영역
@@ -258,14 +259,30 @@ const listapi = function(req, res){
     var collectionJson = generateCollectionFromJson(author, swaggerJson);
     var envJson = generageEnvironmentFromJson(author, swaggerJson, 'gsretail_rest_env');
 
-
-
     //generate된 json에서 item 추출하여 아래에 전달필요.
     res.render('myapi.ejs', {
         collection:collectionJson,
         folder:collectionJson.item,
         env:envJson
     });
+}
+
+const showapis = function(req, res){
+    
+    const author = req.body.author;
+    const swaggerJson = req.body.swaggerJson;
+
+    var collectionJson = generateCollectionFromJson(author, swaggerJson);
+    ejs.renderFile('views/appendableList.ejs',{folder:collectionJson.item},{},(err, html)=>{
+        if(err){
+            res.status(400).end('리스트 수신에 실패했습니다.');
+        }else{
+            res.json({
+                html:html,
+                folders:collectionJson.item
+            });
+        }
+    })
 }
 
 const checkDupId = function(req, res){
@@ -288,7 +305,20 @@ const checkDupId = function(req, res){
             }
         });
     }
-
 }
 
-module.exports = { index, generate, generateFromJson, listapi, checkDupId };
+const importcoll = function(req, res){
+  var importedJson = JSON.parse(String(req.file.buffer).toString('utf-8'));
+  
+  if (importedJson.info){
+    var isPostmanCollection = importedJson.info.hasOwnProperty('_postman_id');
+    if (!isPostmanCollection) {
+        res.status(400).end('포스트맨에서 export한 collection을 사용해 주십시오.')
+    }
+  }else{
+    res.status(400).end('포스트맨에서 export한 collection을 사용해 주십시오.')
+  }
+  res.end(JSON.stringify(importedJson));
+}
+
+module.exports = { index, generate, generateFromJson, listapi, checkDupId, importcoll, showapis };
