@@ -96,7 +96,7 @@
                     $('#hSwaggerJson').val(JSON.stringify(result));
                     var gentleman = { author: vAuthor};
                     $.ajax({
-                        url: "http://localhost:9900/gentleman/checkdupid",
+                        url: "gentleman/checkdupid",
                         type: "POST",
                         data: gentleman,
                         dataType: "json",
@@ -117,7 +117,7 @@
         $('#genAll_old').click(function () {//CORS설정이 안된 Swagger서비스이면 이 메소드로 해야 함...
             var gentleman = { author: $('#author').val(), surl: $('#surl').val() };
             $.ajax({
-                url: "http://localhost:9900/gentleman",
+                url: "/gentleman",
                 type: "POST",
                 data: gentleman,
                 dataType: "json",
@@ -156,7 +156,7 @@
                     // console.log(swaggerJson);
                     var gentleman = { author: $('#author').val(), swgrJson: swaggerJson };
                     $.ajax({
-                        url: "http://localhost:9900/gentleman/fromjson",
+                        url: "/gentleman/fromjson",
                         type: "POST",
                         data: gentleman,
                         //contentType:"application/json; charset=utf-8",

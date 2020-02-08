@@ -21,7 +21,6 @@ cd 내폴더명(예: gentleman)
 
 # 3. port 설정
 vi env.dev 후 PORT value 편집하면 됨
-views/index.html의 ajax호출부의 포트도 변경한 포트로 변경 필요함
 
 # 4. dependency install
 npm install
