@@ -21,11 +21,22 @@
 </head>
 
 <body>
+    <nav class="fixed-top" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item "><a href="/">Home</a></li>
+            <li class="breadcrumb-item "><a href="/new">Postman 콜렉션 처음생성</a></li>
+            <li class="breadcrumb-item active" aria-current="page">선택한 API만 콜렉션으로 생성</li>
+        </ol>
+    </nav>      
      <div class="form-signin">
         <div align="right">
             <button type="button" id="genColTop" class="btn btn-primary btn-sm pull-right">Postman Collection 생성</button>
         </div>
         <p></p>
+        <div class="alert alert-primary" role="alert">
+            테스트 대상 API를 선택한 후 Collection생성해 주세요<br/>
+            <small>상위 그룹을 체크하면 하위 api가 모두 선택/해제 됩니다.</small>
+        </div>
         <% for(var i = 0; i < folder.length; i++){ %>
         <div class="card">
           <div class="card-header" id="<%="heading"+i%>">
@@ -142,11 +153,13 @@
         link2.download = envJson.name + ".json";
         link2.click();
 
-        $('#exampleModalCenter').on('show.bs.modal', function () {
-            $('#exampleModalCenterTitle').text('작업 완료');
-            $('#mdmsg').html('Collection이 생성되어 다운로드 되었습니다.');
-        })
-        $('#exampleModalCenter').modal('toggle');
+        alert('Collection과 환경변수가 생성되어 다운로드 되었습니다.'+'\n'+'Postman에서 import하여 사용하세요.')
+
+        // $('#exampleModalCenter').on('show.bs.modal', function () {
+        //     $('#exampleModalCenterTitle').text('작업 완료');
+        //     $('#mdmsg').html('Collection이 생성되어 다운로드 되었습니다.');
+        // })
+        // $('#exampleModalCenter').modal('toggle');
 
         //4. 실수로 생성하더라도 해당 페이지에서 다시 생성할 수 있게끔 한다.
         location.reload();

@@ -21,6 +21,16 @@
 </head>
 
 <body class="text-center">
+    <!-- <nav class="navbar navbar-dark bg-dark"> -->
+        <!-- Navbar content -->
+      <!-- </nav>     -->
+      <!-- <nav class="navbar fixed-top navbar-light bg-light" aria-label="breadcrumb"> -->
+      <nav class="fixed-top" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item "><a href="/">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Postman 콜렉션 처음생성</li>
+        </ol>
+      </nav>  
     <div class="form-signin" id="postman">
         <img src="/img/postman.png" height="190" , width="211">
         <br />
@@ -163,7 +173,7 @@
                             link2.download = result.env.name + ".json";
                             link2.click();
 
-                            alertModal('작업 완료', 'Collection이 생성되어 다운로드 되었습니다.');
+                            alertModal('작업 완료', 'Collection과 환경변수가 생성되어 다운로드 되었습니다.'+'</br>'+'Postman에서 import하여 사용하세요.');
                         },
                         error: function (req, status, err) {
                             alertModal('작업 오류(' + req.status + ')', req.responseText);

@@ -21,38 +21,48 @@
 </head>
 
 <body class="text-center">
+    <nav class="fixed-top" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item "><a href="/">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">기존 Collection에 API추가</li>
+        </ol>
+    </nav>  
     <div class="form-signin" id="postman">
         <img src="/img/postman.png" height="190" , width="211">
         <br />
         <br />
         <br />
         <br/>
-        <div class="alert alert-success" role="alert">
-            <h4 class="alert-heading">기존 Collection에 선택한 API를 추가합니다.</h4>
-            <p>Collection을 import 후 추가할 API를 선택하세요.</p>
-            <form method="POST" enctype="multipart/form-data" id="jsonForm">
-                <div class="input-group">
-                    <div class="custom-file">
-                        <input type="file" name="jsonFile" id="jsonFile" class="custom-file-input" aria-describedby="button-addon4" onchange="$('#json-file-name').text($(this).val());"required>
-                        <label id="json-file-name" class="custom-file-label text-left" for="jsonFile">테스트중인 Postman Collection을 선택하세요</label>
-                    </div>
-                    <div class="input-group-append" id="button-addon4">
-                        <button class="btn btn-secondary" type="button" id="import">Import</button>
-                    </div>
+        <div class="alert alert-primary text-lg-left" role="alert">
+            <h4>1. 기존 Collection을 선택하세요.</h4>
+            <small>Collection은 Postman에서 export하여 저장한 파일이어야 합니다.</small>
+        </div>
+        <form method="POST" enctype="multipart/form-data" id="jsonForm">
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" name="jsonFile" id="jsonFile" class="custom-file-input" aria-describedby="button-addon4" required>
+                    <label id="json-file-name" class="custom-file-label text-left" data-browse="Collection선택" for="jsonFile">테스트중인 Postman Collection을 선택하세요</label>
                 </div>
-            </form>
-            <hr>
-            <p class="mb-0">추가할 API가 있는 Swagger-ui 상단에 있는 api-docs url을 필요로 합니다.</p>
-            <div class="input-group mb3">
-                <input type="text" id="surl" class="form-control" aria-describedby="button-addon2" placeholder="Swagger api-docs URL"" required>
-                <div class="input-group-append" id="button-addon2">
-                    <button class="btn btn-success" type="button" id="list-api">API 리스트요청</button>
-                </div>
+                <!-- <div class="input-group-append" id="button-addon4">
+                    <button class="btn btn-secondary" type="button" id="import">Import</button>
+                </div> -->
+            </div>
+        </form>
+        <p></p>
+        <div class="alert alert-success  text-lg-left" role="alert">
+            <h4>2. Swagger URL을 입력하고 API 보기를 클릭하세요.</h4>
+            <small>Swagger-ui 상단에 있는 api-docs url참고(ex: http://localhost:9090/v2/api-docs?group=cu).</small>
+        </div>
+        <div class="input-group mb3">
+            <input type="text" id="surl" class="form-control" aria-describedby="button-addon2" placeholder="Swagger api-docs URL"" required>
+            <div class="input-group-append" id="button-addon2">
+                <button class="btn btn-success" type="button" id="list-api">API 보기</button>
             </div>
         </div>
         <br/>
         <div id="apis" class="text-left"></div>
-        <button type=" button" class="btn btn-lg btn-primary btn-block" id="merge-api" style="display:none">Collecton에 API추가</button>
+        <p></p>
+        <button type=" button" class="btn btn-lg btn-danger btn-block" id="merge-api" style="display:none">Collecton에 API추가</button>
         <!-- <div id="result"></div> -->
         <span id='is-imported' hidden></span>
         <span id='currCollection' hidden></span>
@@ -82,7 +92,7 @@
     </div>
 
     <script>
-        $('#import').click(function(){
+        function importCollection(){
             //입력받은 collection파일(json)을 서버 전송하여 currCollection과 author 받아오기
             //validation
             //file명 비어 있을 때
@@ -116,7 +126,6 @@
                     timeout: 600000,
                     success: function (data) {
                         //Imporing current collection
-                        //$('#currCollection').text(data);
                         $('#currCollection').text(data);
                         var description = JSON.parse(data).info.description; //@author 'author's name' 의 형식
                         if (description.includes('@author')) {
@@ -138,6 +147,18 @@
                         alertModal('작업 오류(' + req.status + ')', req.responseText)
                     }
                 });
+        }
+
+        $('#jsonFile').on("change", function(){
+
+            var filepath = document.getElementById("jsonFile").files[0].name;
+            $('#json-file-name').text(filepath);
+            importCollection();
+
+        });
+
+        $('#import').click(function(){
+            importCollection();
         });
 
         $('#list-api').click(function () {
@@ -272,7 +293,8 @@
             link.download = collectionJson.info.name + ".json"; //2.0으로 convert한 것 기준으로 변경
             link.click();
 
-            alertModal('작업 완료', 'Collection에 선택한 api가 추가되어 다운로드 되었습니다.')
+            // alertModal('작업 완료', 'Collection에 선택한 api가 추가되어 다운로드 되었습니다.')
+            alert('Collection에 선택한 api가 추가되어 다운로드 되었습니다.'+'\n'+'Postman에서 import하여 사용하세요.')
             //10. 실수했다면 다시 하라구..^^
             location.reload();
         });

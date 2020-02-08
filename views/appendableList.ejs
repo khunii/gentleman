@@ -1,4 +1,9 @@
-     <div id="append-area" class="form-signin">
+     <div id="append-area" >
+      <div class="alert alert-danger" role="alert">
+        <h4>3. 추가할 테스트 대상 API를 선택하세요.<br/>4. 선택하였으면 Collection에 API추가를 클릭하세요</h4>
+        <small>상위 그룹을 클릭하면 하위 api가 모두 선택/해제 됩니다.</small>
+      </div>
+
         <% for(var i = 0; i < folder.length; i++){ %>
         <div class="card">
           <div class="card-header" id="<%="heading"+i%>">
