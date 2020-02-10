@@ -44,6 +44,7 @@ const generageEnvironmentFromJson = (author, swaggerJson, envName) => {
     var title = swaggerObj.info.title;
     var host = swaggerObj.host;
     var idx = host.lastIndexOf(':');
+    var hostAddr = host.substring(0,idx);
     var pmanPort = '80';
     if (idx > -1){
         pmanPort = host.substr(idx+1);
@@ -69,6 +70,8 @@ const generageEnvironmentFromJson = (author, swaggerJson, envName) => {
     customValues.forEach(item=>{
         if (item.key === 'port'){
             item.value = pmanPort;
+        }else if(item.key === 'host'){
+            item.value = hostAddr;
         }
     })
 
