@@ -8,6 +8,8 @@
 - swagger를 통한 collection생성
 - collection 명 중복 방지
 - environment 동시 다운로드
+- swagger 전체 Api 중 선택한 api만으로 collection생성
+- 기존 collection에 선택한 Api를 추가
 - pre, post 스크립트 지정하여 collection에 삽입
   
 ## Getting started

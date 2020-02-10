@@ -56,6 +56,7 @@
         <div id="result"></div>
         <form id="listApiFormId" name="listApiForm" method="POST" action="/gentleman/listapi">
             <input type="hidden" id="hAuthor" name="hAuthor">
+            <input type="hidden" id="hSurl" name="hSurl">
             <input type="hidden" id="hSwaggerJson" name="hSwaggerJson">
         </form>
     </div>
@@ -93,8 +94,9 @@
                 type: "GET",
                 success: function (result) {
                     $('#hAuthor').val(vAuthor);
+                    // $('#hSurl').val(vSurl);
                     $('#hSwaggerJson').val(JSON.stringify(result));
-                    var gentleman = { author: vAuthor};
+                    var gentleman = { author: vAuthor, swgrUrl: vSurl};
                     $.ajax({
                         url: "gentleman/checkdupid",
                         type: "POST",
@@ -154,7 +156,7 @@
                 success: function (result) {
                     var swaggerJson = JSON.stringify(result);
                     // console.log(swaggerJson);
-                    var gentleman = { author: $('#author').val(), swgrJson: swaggerJson };
+                    var gentleman = { author: $('#author').val(), swgrJson: swaggerJson, swgrUrl: surl };
                     $.ajax({
                         url: "/gentleman/fromjson",
                         type: "POST",

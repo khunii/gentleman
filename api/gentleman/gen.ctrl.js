@@ -39,12 +39,21 @@ const generageEnvironment = (author, swaggerUrl, envName) => {
 }
 
 const generageEnvironmentFromJson = (author, swaggerJson, envName) => {
+    //var title = swaggerJson.info.title;
+    var swaggerObj = JSON.parse(swaggerJson);
+    var title = swaggerObj.info.title;
+    var host = swaggerObj.host;
+    var idx = host.lastIndexOf(':');
+    var pmanPort = '80';
+    if (idx > -1){
+        pmanPort = host.substr(idx+1);
+    }
     var pmanEnv =
         swag2pman.convertSwagger()
             .fromJson(swaggerJson)
             .toPostmanEnvironment({
                 environment: {
-                    name: envName,
+                    name: envName+'_for_'+title,
                     customVariables: [{
                         key:"jwt",
                     },{
@@ -56,6 +65,12 @@ const generageEnvironmentFromJson = (author, swaggerJson, envName) => {
     var customValues = pmanEnv.values.filter(variable => {
         return availableEnv.includes(variable.key);
     });
+
+    customValues.forEach(item=>{
+        if (item.key === 'port'){
+            item.value = pmanPort;
+        }
+    })
 
     pmanEnv.values = customValues;
     return pmanEnv;
@@ -190,21 +205,21 @@ const generate = function (req, res) {
     console.log('url :' + swaggerUrl);
 
     if (!author || !swaggerUrl) {
-        res.status(400).end("Jira 로그a인ID 과 swaggerUrl 을 입력하세요!!!");
+        res.status(400).end("Jira 로그인ID 과 swaggerUrl 을 입력하세요!!!");
     } else {
         //swagger validation
         request(swaggerUrl, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 //db load and check
                 repository.loadCollection('users', (users) => {
-                    if (repository.isDup(users, author)) {
+                    if (repository.isDup(users, author+swaggerUrl)) {
                         res.status(400).end("이미 생성한 Jira 로그인 ID입니다. 다른 로그인ID로 생성하세요");
                     } else {
                         var collectionJson = generateCollection(author, swaggerUrl);
                         //console.log(JSON.stringify(collectionJson));
-                        var envJson = generageEnvironment(author, swaggerUrl, 'gsretail_rest_env')
+                        var envJson = generageEnvironment(author, swaggerUrl, 'envar')
                         var newUser = {
-                            userId: author
+                            userId: author+swaggerUrl
                         }
                         users.insert(newUser);
                         repository.db.saveDatabase();
@@ -224,6 +239,7 @@ const generate = function (req, res) {
 const generateFromJson = function (req, res) {
     const author = req.body.author;
     const swaggerJson = req.body.swgrJson;
+    const swaggerUrl = req.body.swgrUrl;
 
     console.log('Hello generate from json');
     //console.log(swaggerJson);
@@ -233,13 +249,13 @@ const generateFromJson = function (req, res) {
     } else {
         //db load and checkgenerate
         repository.loadCollection('users', (users) => {
-            if (repository.isDup(users, author)) {
+            if (repository.isDup(users, author+swaggerUrl)) {
                 res.status(400).end("이미 생성한 Jira 로그인 ID입니다. 다른 로그인ID로 생성하세요");
             } else {
                 var collectionJson = generateCollectionFromJson(author, swaggerJson);
-                var envJson = generageEnvironmentFromJson(author, swaggerJson, 'gsretail_rest_env')
+                var envJson = generageEnvironmentFromJson(author, swaggerJson, 'envar')
                 var newUser = {
-                    userId: author
+                    userId: author+swaggerUrl
                 }
                 users.insert(newUser);
                 repository.db.saveDatabase();
@@ -257,7 +273,7 @@ const listapi = function(req, res){
     const swaggerJson = req.body.hSwaggerJson;
 
     var collectionJson = generateCollectionFromJson(author, swaggerJson);
-    var envJson = generageEnvironmentFromJson(author, swaggerJson, 'gsretail_rest_env');
+    var envJson = generageEnvironmentFromJson(author, swaggerJson, 'envar');
 
     //generate된 json에서 item 추출하여 아래에 전달필요.
     res.render('myapi.ejs', {
@@ -287,17 +303,18 @@ const showapis = function(req, res){
 
 const checkDupId = function(req, res){
     const author = req.body.author;
+    const swaggerUrl = req.body.swgrUrl;
 
     if (!author) {
         res.status(400).end("Jira 로그인ID를 입력하세요!!!");
     } else {
         //db load and checkgenerate
         repository.loadCollection('users', (users) => {
-            if (repository.isDup(users, author)) {
+            if (repository.isDup(users, author+swaggerUrl)) {
                 res.status(400).end("이미 생성한 Jira 로그인 ID입니다. 다른 로그인ID로 생성하세요");
             } else {
                 var newUser = {
-                    userId: author
+                    userId: author+swaggerUrl
                 }
                 users.insert(newUser);
                 repository.db.saveDatabase();
