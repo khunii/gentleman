@@ -69,6 +69,7 @@
         <span id='author' hidden></span>
         <span id='folders' hidden></span>
         <span id='envJson' hidden></span>
+        <span id='newName' hidden></span>
 
         <!-- <span id='swaggerJson' hidden></span> -->
     </div>
@@ -192,6 +193,7 @@
                             $('#folders').text(JSON.stringify(result.folders));
                             $('#apis').html(result.html);
                             $('#envJson').text(JSON.stringify(result.env));
+                            $('#newName').text(result.newName);
                             if ($('#merge-api').css('display') == 'none'){
                                 $('#merge-api').show();
                             }
@@ -212,6 +214,7 @@
             var folderJson = JSON.parse($('#folders').text())
             var collectionJson = JSON.parse($('#currCollection').text());
             var envJson = JSON.parse($('#envJson').text());
+            var newName = $('#newName').text();
             var selectedApiArr = [];
 
             //1. 체크된 녀석의 _postman_id의 배열 생성
@@ -293,6 +296,12 @@
 
             //8. merge apis, just append folders
             collectionJson.item = collectionJson.item.concat(appendableFolders);
+
+            //8.5 newName으로 rename(동일하면 변경효과 없지만, 계속 정책이 변하므로 새로 합하는 쪽 스웨거가 최신변경반영이어서 이렇게 함)
+            if (newName){
+                collectionJson.info.name = newName;
+            }
+            
 
             //9. download to developer
             var blob = new Blob([JSON.stringify(collectionJson)]);
