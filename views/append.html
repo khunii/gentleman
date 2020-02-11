@@ -133,11 +133,13 @@
                             var author = $.trim(description.replace('@author', ''));
                             if (author == '') {
                                 alertModal('Collection작성오류(JIRA아이디 미작성)', 'Collection의 description에 "@author JIRA아이디"를 입력하고 다시 시도하세요');
+                                location.reload();//currCollection등 초기화를 위함
                                 return;
                             }
                             $('#author').text(author);
                         } else {
                             alertModal('Collection작성오류(@author태그없음)', 'Collection의 description에 "@author JIRA아이디"를 입력하고 다시 시도하세요');
+                            location.reload();//currCollection등 초기화를 위함
                             return;
                         }
                         $("#is-imported").text('true');
