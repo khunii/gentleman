@@ -128,7 +128,7 @@
                         //Imporing current collection
                         $('#currCollection').text(data);
                         var description = JSON.parse(data).info.description; //@author 'author's name' 의 형식
-                        if (description.includes('@author')) {
+                        if (description && description.includes('@author')) {//description을 아예 작성안하면 description이 undefined이다.
                             // var author = description.substr(description.lastIndexOf(' '));
                             var author = $.trim(description.replace('@author', ''));
                             if (author == '') {
@@ -217,6 +217,7 @@
             //2. 체크된 api들 중 기존 콜렉션(collectionJson)에 존재하는 것들의 리스트 생성 후 중복시 알림 후 중단
             var dupApiArr = [];
             for (var i = 0; i < collectionJson.item.length; i++) {
+                if (collectionJson.item[i].item){ //현재 collection에 folder가 없는 경우가 있음.
                     var dupSelectedApis = collectionJson.item[i].item.filter(api => {
                         var folderName = collectionJson.item[i].name;
                         var itemName = api.name;
@@ -227,6 +228,7 @@
                         return selectedApiArr.includes(pk);
                     });
                     dupApiArr = dupApiArr.concat(dupSelectedApis);
+                }
             }
             
             if (dupApiArr.length > 0){
