@@ -292,13 +292,15 @@ const showapis = function(req, res){
     const swaggerJson = req.body.swaggerJson;
 
     var collectionJson = generateCollectionFromJson(author, swaggerJson);
+    var envJson = generageEnvironmentFromJson(author, swaggerJson, 'envar');
     ejs.renderFile('views/appendableList.ejs',{folder:collectionJson.item},{},(err, html)=>{
         if(err){
             res.status(400).end('리스트 수신에 실패했습니다.');
         }else{
             res.json({
                 html:html,
-                folders:collectionJson.item
+                folders:collectionJson.item,
+                env:envJson
             });
         }
     })

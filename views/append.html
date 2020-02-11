@@ -68,6 +68,8 @@
         <span id='currCollection' hidden></span>
         <span id='author' hidden></span>
         <span id='folders' hidden></span>
+        <span id='envJson' hidden></span>
+
         <!-- <span id='swaggerJson' hidden></span> -->
     </div>
     <!-- Modal -->
@@ -189,6 +191,7 @@
                         success: function (result) {
                             $('#folders').text(JSON.stringify(result.folders));
                             $('#apis').html(result.html);
+                            $('#envJson').text(JSON.stringify(result.env));
                             if ($('#merge-api').css('display') == 'none'){
                                 $('#merge-api').show();
                             }
@@ -208,6 +211,7 @@
         $('#merge-api').click(function(){
             var folderJson = JSON.parse($('#folders').text())
             var collectionJson = JSON.parse($('#currCollection').text());
+            var envJson = JSON.parse($('#envJson').text());
             var selectedApiArr = [];
 
             //1. 체크된 녀석의 _postman_id의 배열 생성
@@ -296,6 +300,12 @@
             link.href = window.URL.createObjectURL(blob);
             link.download = collectionJson.info.name + ".json"; //2.0으로 convert한 것 기준으로 변경
             link.click();
+
+            var blob2 = new Blob([JSON.stringify(envJson)]);
+            var link2 = document.createElement('a');
+            link2.href = window.URL.createObjectURL(blob2);
+            link2.download = envJson.name + ".json";
+            link2.click();
 
             // alertModal('작업 완료', 'Collection에 선택한 api가 추가되어 다운로드 되었습니다.')
             alert('Collection에 선택한 api가 추가되어 다운로드 되었습니다.'+'\n'+'Postman에서 import하여 사용하세요.')
