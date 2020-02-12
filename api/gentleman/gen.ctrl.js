@@ -204,34 +204,40 @@ const index = function (req, res) {
 const generate = function (req, res) {
     const author = req.body.author;
     const swaggerUrl = req.body.surl;
-    console.log('author :' + author);
-    console.log('url :' + swaggerUrl);
+    const allowDup = req.body.allowDup;
 
     if (!author || !swaggerUrl) {
         res.status(400).end("Jira 로그인ID 과 swaggerUrl 을 입력하세요!!!");
     } else {
-        //swagger validation
         request(swaggerUrl, function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                //db load and check
-                repository.loadCollection('users', (users) => {
-                    if (repository.isDup(users, author+swaggerUrl)) {
-                        res.status(400).end("이미 생성한 Jira 로그인 ID입니다. 다른 로그인ID로 생성하세요");
-                    } else {
-                        var collectionJson = generateCollection(author, swaggerUrl);
-                        //console.log(JSON.stringify(collectionJson));
-                        var envJson = generageEnvironment(author, swaggerUrl, 'envar')
-                        var newUser = {
-                            userId: author+swaggerUrl
+                if(allowDup=='false'){
+                        //db load and check
+                    repository.loadCollection('users', (users) => {
+                        if (repository.isDup(users, author+swaggerUrl)) {
+                            res.status(400).end("이미 생성한 Jira 로그인 ID입니다. 다른 로그인ID로 생성하세요");
+                        } else {
+                            var collectionJson = generateCollection(author, swaggerUrl);
+                            var envJson = generageEnvironment(author, swaggerUrl, 'envar')
+                            var newUser = {
+                                userId: author+swaggerUrl
+                            }
+                            users.insert(newUser);
+                            repository.db.saveDatabase();
+                            res.end(JSON.stringify({
+                                collection: collectionJson,
+                                env: envJson
+                            }))
                         }
-                        users.insert(newUser);
-                        repository.db.saveDatabase();
-                        res.end(JSON.stringify({
-                            collection: collectionJson,
-                            env: envJson
-                        }))
-                    }
-                });
+                    });
+                }else{
+                    var collectionJson = generateCollection(author, swaggerUrl);
+                    var envJson = generageEnvironment(author, swaggerUrl, 'envar')
+                    res.end(JSON.stringify({
+                        collection: collectionJson,
+                        env: envJson
+                    }))
+                }
             } else {
                 res.status(400).end("SwaggerURL이 정확하지 않거나, Swagger 서비스가 정상적이지 않습니다.");
             }
@@ -243,31 +249,38 @@ const generateFromJson = function (req, res) {
     const author = req.body.author;
     const swaggerJson = req.body.swgrJson;
     const swaggerUrl = req.body.swgrUrl;
-
-    console.log('Hello generate from json');
-    //console.log(swaggerJson);
+    const allowDup = req.body.allowDup;
 
     if (!author || !swaggerJson) {
         res.status(400).end("Jira 로그인ID 와 swaggerUrl 을 입력하세요!!!");
     } else {
-        //db load and checkgenerate
-        repository.loadCollection('users', (users) => {
-            if (repository.isDup(users, author+swaggerUrl)) {
-                res.status(400).end("이미 생성한 Jira 로그인 ID입니다. 다른 로그인ID로 생성하세요");
-            } else {
-                var collectionJson = generateCollectionFromJson(author, swaggerJson);
-                var envJson = generageEnvironmentFromJson(author, swaggerJson, 'envar')
-                var newUser = {
-                    userId: author+swaggerUrl
+        if (allowDup == 'false'){
+            //db load and checkgenerate
+            repository.loadCollection('users', (users) => {
+                if (repository.isDup(users, author+swaggerUrl)) {
+                    res.status(400).end("이미 생성한 Jira 로그인 ID입니다. 다른 로그인ID로 생성하세요");
+                } else {
+                    var collectionJson = generateCollectionFromJson(author, swaggerJson);
+                    var envJson = generageEnvironmentFromJson(author, swaggerJson, 'envar')
+                    var newUser = {
+                        userId: author+swaggerUrl
+                    }
+                    users.insert(newUser);
+                    repository.db.saveDatabase();
+                    res.end(JSON.stringify({
+                        collection: collectionJson,
+                        env: envJson
+                    }))
                 }
-                users.insert(newUser);
-                repository.db.saveDatabase();
-                res.end(JSON.stringify({
-                    collection: collectionJson,
-                    env: envJson
-                }))
-            }
-        });
+            });
+        }else{
+            var collectionJson = generateCollectionFromJson(author, swaggerJson);
+            var envJson = generageEnvironmentFromJson(author, swaggerJson, 'envar')
+            res.end(JSON.stringify({
+                collection: collectionJson,
+                env: envJson
+            }))
+        }
     }
 }
 
