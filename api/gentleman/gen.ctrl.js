@@ -13,9 +13,8 @@ var request = require('request');
 var transformer = require('postman-collection-transformer');
 var ejs = require('ejs');
 
-
 //함수영역
-const generageEnvironment = (author, swaggerUrl, envName) => {
+const generageEnvironment = (author, swaggerUrl, envName) => { //deprecated
     var pmanEnv =
         swag2pman.convertSwagger()
             .fromUrl(swaggerUrl)
@@ -49,6 +48,11 @@ const generageEnvironmentFromJson = (author, swaggerJson, envName) => {
     if (idx > -1){
         pmanPort = host.substr(idx+1);
     }
+
+    //authScheme, authHost, authPort, authContext 는 jwt를 리턴하는 서비스 api의 환경변수임.
+    //개발동안은 임시로 foev프로젝트의 사용자로그인으로 사용하며
+    //http://localhost:8090/ev 까지가 each 환경변수에 입력되며
+    //full URL은 http://localhost:8090/ev/jwt/login임
     var pmanEnv =
         swag2pman.convertSwagger()
             .fromJson(swaggerJson)
@@ -59,10 +63,24 @@ const generageEnvironmentFromJson = (author, swaggerJson, envName) => {
                         key:"jwt",
                     },{
                         key:"jwt_expired_time"
+                    },{
+                        key:"tokenType"
+                    },{
+                        key:"authScheme",
+                        value:"http"
+                    },{
+                        key:"authHost",
+                        value:"localhost"
+                    },{
+                        key:"authPort",
+                        value:"8090"
+                    },{
+                        key:"authContext",
+                        value:"/ev"
                     }]
                 }
             })
-    var availableEnv = ['scheme', 'host', 'port', 'jwt', 'jwt_expired_time'];            
+    var availableEnv = ['scheme', 'host', 'port', 'jwt', 'jwt_expired_time','tokenType','authScheme','authHost','authPort','authContext'];            
     var customValues = pmanEnv.values.filter(variable => {
         return availableEnv.includes(variable.key);
     });
@@ -83,7 +101,7 @@ const generageEnvironmentFromJson = (author, swaggerJson, envName) => {
  * 인서트할 스크립트 파일의 따옴표는 모두 쌍따옴표로 되어 있어야 함
  *
  */
-const generateCollection = function (author, swaggerUrl) {
+const generateCollection = function (author, swaggerUrl) {//deprecated
     var author = author;
     var swaggerUrl = swaggerUrl;
 
@@ -148,11 +166,20 @@ const generateCollectionFromJson = function (author, swaggerJson) {
             // .fromJson(JSON.stringify(swaggerJson))
             .fromJson(swaggerJson)
             .toPostmanCollection({
+                globalHeaders:[
+                    "Authorization:{{tokenType}} {{jwt}}"
+                ],
                 prettyPrint: true
             });
 
     var preScript = fs.readFileSync("./scripts/pre-script.js", "utf-8").split("\n");
-    var postScript = fs.readFileSync("./scripts/post-script.js", "utf-8").split("\n");
+    // var postScript = fs.readFileSync("./scripts/post-script.js", "utf-8").split("\n");
+    var postScript;
+    var commonTestScript = fs.readFileSync("./scripts/common-test-script.js", "utf-8").split("\n");
+    var getTestScript = fs.readFileSync("./scripts/get-test-script.js", "utf-8").split("\n");
+    var postTestScript = fs.readFileSync("./scripts/post-test-script.js", "utf-8").split("\n");
+    var updateTestScript = fs.readFileSync("./scripts/update-test-script.js", "utf-8").split("\n");
+    var deleteTestScript = fs.readFileSync("./scripts/delete-test-script.js", "utf-8").split("\n");
 
     pmanCollection.name = author + '_' + pmanCollection.name;
     pmanCollection.description = '@author ' + author;
@@ -163,8 +190,31 @@ const generateCollectionFromJson = function (author, swaggerJson) {
             "type": "text/javascript",
             "exec": preScript
         }
-    }];
+      },
+      {
+        "listen": "test",
+        "script": {
+            "id": "f8384b11-f3a7-4a87-86a5-9fa54f7e1c74",
+            "type": "text/javascript",
+            "exec": commonTestScript
+        }
+      }
+    ];
     pmanCollection.requests.forEach((item) => {
+        // console.log('METHOD Of Request : ' + item.method);
+        if(item.method == 'GET'){
+            postScript = getTestScript;
+        }else if (item.method == 'POST'){
+            postScript = postTestScript;
+
+        }else if (item.method == 'UPDATE'){
+            postScript = updateTestScript;
+
+        }else if (item.method == 'DELETE'){
+            postScript = deleteTestScript;
+        }
+        
+
         item.description = '@jira';
         item.events = [{
             "listen": "test",
