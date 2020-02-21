@@ -181,8 +181,9 @@ const generateCollectionFromJson = function (author, swaggerJson) {
     var updateTestScript = fs.readFileSync("./scripts/update-test-script.js", "utf-8").split("\n");
     var deleteTestScript = fs.readFileSync("./scripts/delete-test-script.js", "utf-8").split("\n");
 
+    var group = pmanCollection.name;
     pmanCollection.name = author + '_' + pmanCollection.name;
-    pmanCollection.description = '@author ' + author;
+    pmanCollection.description = '@author ' + author + '\n' + '@group ' + group;
     pmanCollection.events = [{
         "listen": "prerequest",
         "script": {
