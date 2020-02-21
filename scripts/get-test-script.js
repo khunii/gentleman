@@ -11,18 +11,33 @@ pm.test("응답은 success", ()=>{
     pm.expect(resultJsonDto.success).eql(true);
 })
 
-// 1건 이상 조회 검증
-/*
-    pm.response.json().data가 Array.isArray()이면 가능하다.
-    그렇지 않을 때는 ~json().data가 하나의 json을 리턴하는데 그것을 가지고 판단해야 한다.
-
- */
-
+// 1건 이상 조회 검증(단건조회, 다건조회 공통)
 pm.test("정상적으로 조회가 수행됨", ()=>{
     if (isList){
         pm.expect(resultJsonDto.data.length).to.be.above(0);
     }else{
         pm.expect(resultJsonDto.data).to.not.be.empty;
+    }
+})
+
+/*
+   단건 조회 데이터가 조회되었는지 검증이 필요한 경우 skipValidSingle를 false로 변경하세요.
+ */
+const skipValidSingle = true;
+(skipValidSingle ? pm.test.skip : pm.test)("조회조건에 맞는 데이터가 조회됨", ()=>{
+    //http://localhost:9080/fo/cu/users/jacob 이라는 요청에서 jacob을 얻기위해서는
+    //pm.request.url.path 배열에서 구해야 함
+    //여기서 path에는 [fo, cu, users, jacob] 처럼 입력되므로, 
+    //jacob의 index인 3을 condIdx로 지정함
+    var condIdx = 3;
+    var property = 'userId' // response json에서 검증을 위해 찾아야할 property
+    var requestParam = pm.request.url.path[condIdx];
+    if (!isList){
+        var responseParam = resultJsonDto.data[`${property}`];
+        if (!isNaN(responseParam)){
+            responseParam = responseParam.toString();
+        }
+        pm.expect(responseParam).eql(requestParam);
     }
 })
 
@@ -45,14 +60,4 @@ const limitTestSkip = true;
     if (isList){
         pm.expect(resultJsonDto.data.length).to.be.below(pagingParam+1);
     }
-})
-
-
-
-/*
-    예외 테스트가 필요한 경우, inValidTestSkip을 false로 변경하세요.
- */
-const inValidTestSkip = true;
-(inValidTestSkip ? pm.test.skip : pm.test)("조회 대상 데이터가 없음", ()=>{
-    pm.expect(resultJsonDto.data.length).to.be.eql(0);
 })

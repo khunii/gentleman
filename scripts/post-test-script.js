@@ -1,6 +1,7 @@
+var resultJsonDto = pm.response.json();
 
 pm.test("입력(등록) success코드 정상", ()=>{
-    pm.expect(pm.response.json().success).eql(true);
+    pm.expect(resultJsonDto.success).eql(true);
 })
 
 pm.test("응답코드 정상",()=>{
@@ -8,19 +9,17 @@ pm.test("응답코드 정상",()=>{
 })
 
 /*
-  예외 테스트(필수입력 체크)가 필요한 경우 requiredCheckTestSkip 을 false로 변경하세요
-  requiredProperty 배열에는 필수입력 필드의 json Key명을 입력하세요.
-
-  개발중 : snippet업데이트 필요함
+   필수항목 필드 지정방법
+   아래의 requiredProperty 배열에 필수항목 필드명을 입력하시면 됩니다.
+   ex) productId, price 가 필수일때
+   var requiredProperty = ['productId', 'price'];
  */
-const requiredCheckTestSkip = true;
-(requiredCheckTestSkip ? pm.test.skip : pm.test)('필수입력 항목이 입력되지 않음', ()=>{
+pm.test('필수입력 항목이 입력됨', ()=>{
     var reqBody = JSON.parse(request.data);
-    var requiredProperty = ['userName', 'userId', 'address'];
+    var requiredProperty = [];
     
     for(var i = 0; i < requiredProperty.length; i++){
         pm.expect(reqBody).to.have.property(requiredProperty[i]);
-        pm.expect(reqBody[requiredProperty[i]]).to.be.oneOf([null, ""]);
+        pm.expect(reqBody[requiredProperty[i]]).not.to.be.oneOf([null, ""]);
     }
 });
-
