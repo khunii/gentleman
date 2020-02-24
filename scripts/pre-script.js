@@ -3,7 +3,8 @@ const authHost = pm.environment.get("authHost");
 const authPort = pm.environment.get("authPort");
 const authContext = pm.environment.get("authContext");
 
-const username = 'username';
+const userid = 'hyunsu4';
+const jobPosition = 'AA';
 const password = 'password';
   
 const authSigninRequest = {  
@@ -14,8 +15,8 @@ const authSigninRequest = {
         mode:"application/json",  
         raw: JSON.stringify(  
             {  
-                "username":`${username}`,  
-                "password":`${password}`  
+                "userId":`${userid}`,  
+                "jobPosition":`${jobPosition}`  
             })  
     }  
 };  
