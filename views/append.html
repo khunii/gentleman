@@ -131,6 +131,7 @@
                         //Imporing current collection
                         $('#currCollection').text(data);
                         var description = JSON.parse(data).info.description; //@author 'author's name' 의 형식
+                        description = description.substring(0,description.indexOf('\n'));//뒤에 @grourp이 있으므로 @author만 추출
                         if (description && description.includes('@author')) {//description을 아예 작성안하면 description이 undefined이다.
                             // var author = description.substr(description.lastIndexOf(' '));
                             var author = $.trim(description.replace('@author', ''));
