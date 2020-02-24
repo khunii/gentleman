@@ -23,7 +23,7 @@ const authSigninRequest = {
   
 let getToken = true;  
   
-if (pm.request.headers.get("Authorization") && username && password){  
+if (pm.request.headers.get("Authorization") && userid && password){  
     console.log("pre-script, jwt check role in....");
     console.log(pm.environment.get("jwt_expired_time"));
     console.log( (new Date()).getTime());
