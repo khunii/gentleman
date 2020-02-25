@@ -21,9 +21,22 @@ const authSigninRequest = {
     }  
 };  
   
-let getToken = true;  
+let getToken = true; 
+
+pm.request.headers = pm.request.headers.filter((item)=>{
+    return item.disabled != true;
+});
+
+var isIncluded = false;
+
+for(var i=0; i < pm.request.headers.length; i++){
+    if (pm.request.headers[i].key === "Authorization"){
+        isIncluded = true;
+        break;
+    }
+}
   
-if (pm.request.headers.get("Authorization") && userid && password){  
+if (isIncluded && userid && password){  
     console.log("pre-script, jwt check role in....");
     console.log(pm.environment.get("jwt_expired_time"));
     console.log( (new Date()).getTime());
