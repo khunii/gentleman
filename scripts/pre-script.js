@@ -23,14 +23,15 @@ const authSigninRequest = {
   
 let getToken = true; 
 
-pm.request.headers = pm.request.headers.filter((item)=>{
-    return item.disabled != true;
+var enabledHeaders = [];
+enabledHeaders = pm.request.headers.filter((item)=>{
+    return item.disabled !== true;
 });
 
 var isIncluded = false;
 
-for(var i=0; i < pm.request.headers.length; i++){
-    if (pm.request.headers[i].key === "Authorization"){
+for(var i=0; i < enabledHeaders.length; i++){
+    if (enabledHeaders[i].key === "Authorization"){
         isIncluded = true;
         break;
     }

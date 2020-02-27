@@ -20,7 +20,6 @@ app.use(bodyParser.urlencoded({
     extended:true
 }));
 
-
 app.use(function(err, req, res, next){
     if(err.name === 'StatusError'){
         res.send(err.status, err.message);

@@ -173,7 +173,6 @@ const generateCollectionFromJson = function (author, swaggerJson) {
             });
 
     var preScript = fs.readFileSync("./scripts/pre-script.js", "utf-8").split("\n");
-    // var postScript = fs.readFileSync("./scripts/post-script.js", "utf-8").split("\n");
     var postScript;
     var commonTestScript = fs.readFileSync("./scripts/common-test-script.js", "utf-8").split("\n");
     var getTestScript = fs.readFileSync("./scripts/get-test-script.js", "utf-8").split("\n");
@@ -187,7 +186,7 @@ const generateCollectionFromJson = function (author, swaggerJson) {
     pmanCollection.events = [{
         "listen": "prerequest",
         "script": {
-            "id": "f8384b11-f3a7-4a87-86a5-9fa54f7e1c73",
+            //"id": "f8384b11-f3a7-4a87-86a5-9fa54f7e1c73",
             "type": "text/javascript",
             "exec": preScript
         }
@@ -195,7 +194,7 @@ const generateCollectionFromJson = function (author, swaggerJson) {
       {
         "listen": "test",
         "script": {
-            "id": "f8384b11-f3a7-4a87-86a5-9fa54f7e1c74",
+            //"id": "f8384b11-f3a7-4a87-86a5-9fa54f7e1c74",
             "type": "text/javascript",
             "exec": commonTestScript
         }
@@ -208,7 +207,7 @@ const generateCollectionFromJson = function (author, swaggerJson) {
         }else if (item.method == 'POST'){
             postScript = postTestScript;
 
-        }else if (item.method == 'UPDATE'){
+        }else if (item.method == 'PUT'){
             postScript = updateTestScript;
 
         }else if (item.method == 'DELETE'){
@@ -220,7 +219,7 @@ const generateCollectionFromJson = function (author, swaggerJson) {
         item.events = [{
             "listen": "test",
             "script": {
-                "id": "fa1c2cce-39bc-467a-b7e5-a7187edafb01",
+                //"id": "fa1c2cce-39bc-467a-b7e5-a7187edafb01",
                 "type": "text/javascript",
                 "exec": postScript
             }

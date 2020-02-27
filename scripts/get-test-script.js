@@ -1,4 +1,13 @@
-var resultJsonDto = pm.response.json();
+var resultJsonDto = {};
+try{
+    resultJsonDto = pm.response.json();
+}catch(err){
+    resultJsonDto = {
+        success:false,
+        data:{status:"response data is nothing"}
+    }
+}
+
 var isList = Array.isArray(resultJsonDto.data)
 
 //200 OK검증

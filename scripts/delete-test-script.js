@@ -1,4 +1,12 @@
-var resultJsonDto = pm.response.json();
+var resultJsonDto = {};
+try{
+    resultJsonDto = pm.response.json();
+}catch(err){
+    resultJsonDto = {
+        success:false,
+        data:{status:"response data is nothing"}
+    }
+}
 
 pm.test("삭제 success코드 정상", ()=>{
     pm.expect(resultJsonDto.success).eql(true);

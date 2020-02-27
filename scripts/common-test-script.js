@@ -7,7 +7,7 @@ const schema = {
         "statusCode": {"type":["string","null"]},
         "statusMessage": {"type":["string","null"]},
         "data":{
-            "type":["array","object"]
+            "type":["array","object","integer","string","null"]
         }
     },
     "required":["success","statusCode","statusMessage","data"]
