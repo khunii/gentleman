@@ -3,7 +3,7 @@ const authHost = pm.environment.get("authHost");
 const authPort = pm.environment.get("authPort");
 const authContext = pm.environment.get("authContext");
 
-const userid = 'hyunsu4';
+const userid = 'testuser';
 const jobPosition = 'AA';
 const password = 'password';
   
@@ -55,7 +55,7 @@ if (isIncluded && userid && password){
     if (getToken){  
         pm.sendRequest(authSigninRequest, function(err, res){  
             // console.log("resign start");  
-            console.log(err ? err : res.json().token);  
+            // console.log(err ? err : res.json().token);  
             if (err === null){  
                 let jwt_token = res.json().data['jwtRslt'].idToken;  
                 // let parsedToken = JSON.parse(atob(res.json().token.split(".")[1]));  

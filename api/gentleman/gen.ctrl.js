@@ -70,13 +70,13 @@ const generageEnvironmentFromJson = (author, swaggerJson, envName) => {
                         value:"http"
                     },{
                         key:"authHost",
-                        value:"localhost"
+                        value:"27.122.139.210"
                     },{
                         key:"authPort",
-                        value:"8090"
+                        value:"8050"
                     },{
                         key:"authContext",
-                        value:"/ev"
+                        value:"/fo/cu"
                     }]
                 }
             })
@@ -157,9 +157,10 @@ const generateCollection = function (author, swaggerUrl) {//deprecated
     // return pmanCollection;
 }
 
-const generateCollectionFromJson = function (author, swaggerJson) {
+const generateCollectionFromJson = function (author, swaggerJson, group) {
     var author = author;
     var swaggerJson = swaggerJson;
+    var group = group;
 
     var pmanCollection =
         swag2pman.convertSwagger()
@@ -180,7 +181,7 @@ const generateCollectionFromJson = function (author, swaggerJson) {
     var updateTestScript = fs.readFileSync("./scripts/update-test-script.js", "utf-8").split("\n");
     var deleteTestScript = fs.readFileSync("./scripts/delete-test-script.js", "utf-8").split("\n");
 
-    var group = pmanCollection.name;
+    // var group = pmanCollection.name;
     pmanCollection.name = author + '_' + pmanCollection.name;
     pmanCollection.description = '@author ' + author + '\n' + '@group ' + group;
     pmanCollection.events = [{
@@ -300,6 +301,7 @@ const generateFromJson = function (req, res) {
     const swaggerJson = req.body.swgrJson;
     const swaggerUrl = req.body.swgrUrl;
     const allowDup = req.body.allowDup;
+    const group = req.body.group;
 
     if (!author || !swaggerJson) {
         res.status(400).end("Jira 로그인ID 와 swaggerUrl 을 입력하세요!!!");
@@ -310,7 +312,7 @@ const generateFromJson = function (req, res) {
                 if (repository.isDup(users, author+swaggerUrl)) {
                     res.status(400).end("이미 생성한 Jira 로그인 ID입니다. 다른 로그인ID로 생성하세요");
                 } else {
-                    var collectionJson = generateCollectionFromJson(author, swaggerJson);
+                    var collectionJson = generateCollectionFromJson(author, swaggerJson, group);
                     var envJson = generageEnvironmentFromJson(author, swaggerJson, 'envar')
                     var newUser = {
                         userId: author+swaggerUrl
@@ -324,7 +326,7 @@ const generateFromJson = function (req, res) {
                 }
             });
         }else{
-            var collectionJson = generateCollectionFromJson(author, swaggerJson);
+            var collectionJson = generateCollectionFromJson(author, swaggerJson, group);
             var envJson = generageEnvironmentFromJson(author, swaggerJson, 'envar')
             res.end(JSON.stringify({
                 collection: collectionJson,
@@ -337,8 +339,9 @@ const generateFromJson = function (req, res) {
 const listapi = function(req, res){
     const author = req.body.hAuthor;
     const swaggerJson = req.body.hSwaggerJson;
+    const group = req.body.hGroup;
 
-    var collectionJson = generateCollectionFromJson(author, swaggerJson);
+    var collectionJson = generateCollectionFromJson(author, swaggerJson, group);
     var envJson = generageEnvironmentFromJson(author, swaggerJson, 'envar');
 
     //generate된 json에서 item 추출하여 아래에 전달필요.

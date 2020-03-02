@@ -62,6 +62,7 @@
             <input type="hidden" id="hAuthor" name="hAuthor">
             <input type="hidden" id="hSurl" name="hSurl">
             <input type="hidden" id="hSwaggerJson" name="hSwaggerJson">
+            <input type="hidden" id="hGroup" name="hGroup">
         </form>
     </div>
     <!-- Modal -->
@@ -100,6 +101,7 @@
                 success: function (result) {
                     $('#hAuthor').val(vAuthor);
                     $('#hSwaggerJson').val(JSON.stringify(result));
+                    $('#hGroup').val(vSurl.substr(vSurl.indexOf('=')+1));
                     var gentleman = { author: vAuthor, swgrUrl: vSurl};
                     if (!allowDup){
                         $.ajax({
@@ -163,9 +165,10 @@
                 url: surl,
                 type: "GET",
                 success: function (result) {
+                    var group = surl.substr(surl.indexOf('=')+1);
                     var swaggerJson = JSON.stringify(result);
                     var allowDup = $('#allowDup').is(":checked"); //아이디 중복 허용여부
-                    var gentleman = { author: $('#author').val(), swgrJson: swaggerJson, swgrUrl: surl ,allowDup: allowDup};
+                    var gentleman = { author: $('#author').val(), swgrJson: swaggerJson, swgrUrl: surl ,allowDup: allowDup, group: group};
                     $.ajax({
                         url: "/gentleman/fromjson",
                         type: "POST",
