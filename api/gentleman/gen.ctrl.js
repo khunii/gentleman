@@ -201,8 +201,11 @@ const generateCollectionFromJson = function (author, swaggerJson, group) {
         }
       }
     ];
+
+    var rawtype = {};
+    rawtype.language = 'json';
     pmanCollection.requests.forEach((item) => {
-        // console.log('METHOD Of Request : ' + item.method);
+
         if(item.method == 'GET'){
             postScript = getTestScript;
         }else if (item.method == 'POST'){
@@ -214,8 +217,6 @@ const generateCollectionFromJson = function (author, swaggerJson, group) {
         }else if (item.method == 'DELETE'){
             postScript = deleteTestScript;
         }
-        
-
         item.description = '@jira';
         item.events = [{
             "listen": "test",
@@ -225,6 +226,20 @@ const generateCollectionFromJson = function (author, swaggerJson, group) {
                 "exec": postScript
             }
         }]
+
+        //GET방식인데 @ReqeustBody로 매핑되어 body에 json이 포함된 api의 경우,
+        //Postman에서 첫 import후 로드시켜 보면 body의 json이 모두 사라져 있게 된다.
+        //Postman버그로 보이며(올드버전에서는 아예 GET인데 body가 있으면 request send도 안되었다고 한다.)
+        //이를 최소의 노력으로 방지하기 위해 dataMode가 raw이면 분명 body가 존재한다는 것이므로 
+        //그럴때는 타입을 json으로 , 거기다가 GET방식일때만 POST로 임시전환해서 컬렉션 생성한다.
+        //사용자는 우선 body를 살리고(이게 더 effort가 듬), 단순히 방식만 POST에서 GET으로 변환 후 사용
+        if (item.dataMode == 'raw'){
+            item.dataOptions = {};
+            item.dataOptions.raw = rawtype;//raw로 들어가는 body는 무조건 json type으로 지정
+            if (item.method == 'GET'){
+                item.method = 'POST'; 
+            }
+        }
     })
     //transform v2.0
     var options = {
@@ -235,15 +250,10 @@ const generateCollectionFromJson = function (author, swaggerJson, group) {
 
     var testConv = transformer.convert(pmanCollection, options, function(err, converted){
         if (!err){
-            //console.log(JSON.stringify(converted));
             return converted;
         }
     })
-
-    //console.log('testconv ='+JSON.stringify(testConv));
     return testConv;
-
-    // return pmanCollection;
 }
 
 
