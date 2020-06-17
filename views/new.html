@@ -40,9 +40,9 @@
             <h4 class="alert-heading">API를 테스트 하기 위한 Collection을 생성하세요</h4>
             <p>Swagger를 이용하여 Postman Collection을 생성합니다.</p>
             <hr>
-            <p class="mb-0">개발자의 Jira로그인 ID와 Swagger-ui 상단에 있는 api-docs url을 필요로 합니다.</p>
+            <p class="mb-0">개발자 ID와 Swagger-ui 상단에 있는 api-docs url을 필요로 합니다.</p>
         </div>
-        <input type="text" id="author" class="form-control" placeholder="Jira 로그인 아이디" required autofocus>
+        <input type="text" id="author" class="form-control" placeholder="개발자 아이디" required autofocus>
         <input type="text" id="surl" class="form-control" placeholder="Swagger api-docs URL"" required>
         <br/>
         <div class="row">
@@ -56,7 +56,7 @@
         <br/>
         <input class="form-check-input text-left" name="allowDup" type="checkbox" id="allowDup">
         <label class="form-check-label text-left" for="allowDup">동일한 아이디로 생성 허용</label>
-
+        
         <div id="result"></div>
         <form id="listApiFormId" name="listApiForm" method="POST" action="/gentleman/listapi">
             <input type="hidden" id="hAuthor" name="hAuthor">
