@@ -56,3 +56,8 @@ $ sudo apt install nodejs
 $ node --version or node -v
 $ npm --version or npm -v
 ```
+
+- CentOS 환경 설치
+참고
+nodejs, npm : https://ondemand.tistory.com/229
+git  : https://morningame.tistory.com/27
