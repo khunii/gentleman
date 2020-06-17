@@ -58,6 +58,7 @@ $ npm --version or npm -v
 ```
 
 - CentOS 환경 설치
-참고
-nodejs, npm : https://ondemand.tistory.com/229
+yum install nodejs 와 같이 설치를 하게되면, nodejs 최신버전이 아닌 구버전이 설치되니 nvm을 추천함
+해당 블로그를 참고하여 설치하도록 한다
+nodejs, npm : https://mosei.tistory.com/entry/nvm-nodejs-npm-%EC%84%A4%EC%B9%98-CentOS7
 git  : https://morningame.tistory.com/27
