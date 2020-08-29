@@ -1,10 +1,10 @@
+// collection의 하위 request가 호출될 때 마다 호출전 실행되는 공통 스크립트
 const authScheme = pm.environment.get("authScheme");
 const authHost = pm.environment.get("authHost");  
 const authPort = pm.environment.get("authPort");
 const authContext = pm.environment.get("authContext");
 
 const userid = 'testuser';
-const jobPosition = 'AA';
 const password = 'password';
   
 const authSigninRequest = {  
@@ -50,9 +50,10 @@ if (isIncluded && userid && password){
         console.log("jwt OK")  
         getToken = false;  
     }  
-      
+   
+    //ucube초기에는 authorization을 헤더에 포함하지 않으므로, request가 실행되지는 않는다.
     // if expired , reassign  
-    if (getToken){  
+    if (getToken && isIncluded){ //token을 새로 받아야 되는 상황이면서, header에 authorization을 가지는 collection일때만 token얻는 request실행  
         pm.sendRequest(authSigninRequest, function(err, res){  
             // console.log("resign start");  
             // console.log(err ? err : res.json().token);  

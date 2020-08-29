@@ -21,10 +21,6 @@
 </head>
 
 <body class="text-center">
-    <!-- <nav class="navbar navbar-dark bg-dark"> -->
-        <!-- Navbar content -->
-      <!-- </nav>     -->
-      <!-- <nav class="navbar fixed-top navbar-light bg-light" aria-label="breadcrumb"> -->
       <nav class="fixed-top" aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item "><a href="/">Home</a></li>
@@ -40,10 +36,10 @@
             <h4 class="alert-heading">API를 테스트 하기 위한 Collection을 생성하세요</h4>
             <p>Swagger를 이용하여 Postman Collection을 생성합니다.</p>
             <hr>
-            <p class="mb-0">개발자의 Jira로그인 ID와 Swagger-ui 상단에 있는 api-docs url을 필요로 합니다.</p>
+            <p class="mb-0">개발자의 Jira로그인 ID와 Swagger-ui의 api-docs url(예: http://localhost:8080/v2/api-docs)을 필요로 합니다.</p>
         </div>
         <input type="text" id="author" class="form-control" placeholder="Jira 로그인 아이디" required autofocus>
-        <input type="text" id="surl" class="form-control" placeholder="Swagger api-docs URL"" required>
+        <input type="text" id="surl" class="form-control" placeholder="Swagger api-docs URL(예: http://localhost:8080/v2/api-docs)" required>
         <br/>
         <div class="row">
             <div class="col">
@@ -92,7 +88,7 @@
             var vSurl   = $('#surl').val();
             var allowDup = $('#allowDup').is(":checked"); //아이디 중복 허용여부
             if (!vSurl || !vSurl === ''){
-                alertModal('URL오류', 'Swagger URL을 입력해 주세요');
+                alertModal('URL오류', 'Swagger URL을 입력해 주세요(예: http://localhost:8080/v2/api-docs)');
                 return;
             }
             $.ajax({
@@ -121,44 +117,15 @@
                     }
                 },
                 error: function (req, status, err) {
-                    alertModal('작업 오류(400)', 'Swagger URL 을 정확히 입력해 주세요');
+                    alertModal('작업 오류(400)', 'Swagger URL 을 정확히 입력해 주세요(예: http://localhost:8080/v2/api-docs)');
                 }
-            })
-        })
-
-        $('#genAll_old').click(function () {//CORS설정이 안된 Swagger서비스이면 이 메소드로 해야 함...
-            var allowDup = $('#allowDup').is(":checked"); //아이디 중복 허용여부
-            var gentleman = { author: $('#author').val(), surl: $('#surl').val(), allowDup: allowDup};
-            $.ajax({
-                url: "/gentleman",
-                type: "POST",
-                data: gentleman,
-                dataType: "json",
-                success: function (result) {
-                    var blob = new Blob([JSON.stringify(result.collection)]);
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = result.collection.info.name + ".json"; //2.0으로 convert한 것 기준으로 변경
-                    link.click();
-                    var blob2 = new Blob([JSON.stringify(result.env)]);
-                    var link2 = document.createElement('a');
-                    link2.href = window.URL.createObjectURL(blob2);
-                    link2.download = result.env.name + ".json";
-                    link2.click();
-
-                    alertModal('작업 완료', 'Collection이 생성되어 다운로드 되었습니다.');
-                },
-                error: function (req, status, err) {
-                    alertModal('작업 오류(' + req.status + ')', req.responseText);
-                }
-
             })
         })
 
         $('#genAll').click(function () {
             var surl = $('#surl').val();
             if (!surl || !surl === ''){
-                alertModal('URL오류', 'Swagger URL을 입력해 주세요');
+                alertModal('URL오류', 'Swagger URL을 입력해 주세요(예: http://localhost:8080/v2/api-docs)');
                 return;
             }
             $.ajax({
@@ -195,7 +162,7 @@
                     })
                 },
                 error: function (req, status, err) {
-                    alertModal('작업 오류(400)', 'Swagger URL 을 정확히 입력해 주세요');
+                    alertModal('작업 오류(400)', 'Swagger URL 을 정확히 입력해 주세요(예: http://localhost:8080/v2/api-docs)');
                 }
 
             })

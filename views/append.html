@@ -43,15 +43,12 @@
                     <input type="file" name="jsonFile" id="jsonFile" class="custom-file-input" aria-describedby="button-addon4" required>
                     <label id="json-file-name" class="custom-file-label text-left" data-browse="Collection선택" for="jsonFile">테스트중인 Postman Collection을 선택하세요</label>
                 </div>
-                <!-- <div class="input-group-append" id="button-addon4">
-                    <button class="btn btn-secondary" type="button" id="import">Import</button>
-                </div> -->
             </div>
         </form>
         <p></p>
         <div class="alert alert-success  text-lg-left" role="alert">
             <h4>2. Swagger URL을 입력하고 API 보기를 클릭하세요.</h4>
-            <small>Swagger-ui 상단에 있는 api-docs url참고(ex: http://localhost:9090/v2/api-docs?group=cu).</small>
+            <small>Swagger-ui의 api-docs url참고(예: http://localhost:8080/v2/api-docs).</small>
         </div>
         <div class="input-group mb3">
             <input type="text" id="surl" class="form-control" aria-describedby="button-addon2" placeholder="Swagger api-docs URL"" required>
@@ -176,7 +173,7 @@
             //0. swagger 유효성 체크
             var vSurl = $('#surl').val();
             if (!vSurl || !vSurl === ''){
-                alertModal('URL오류', 'Swagger URL을 입력해 주세요');
+                alertModal('URL오류', 'Swagger URL을 입력해 주세요(예: http://localhost:8080/v2/api-docs)');
                 return;
             }
             $.ajax({
@@ -206,7 +203,7 @@
 
                 },
                 error: function (req, status, err) {
-                    alertModal('작업 오류(400)', 'Swagger URL 을 정확히 입력해 주세요');
+                    alertModal('작업 오류(400)', 'Swagger URL 을 정확히 입력해 주세요(예: http://localhost:8080/v2/api-docs)');
                 }
             })
         })

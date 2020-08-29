@@ -66,17 +66,17 @@ const generageEnvironmentFromJson = (author, swaggerJson, envName) => {
                     },{
                         key:"tokenType"
                     },{
-                        key:"authScheme",
-                        value:"http"
+                        key:"authScheme"
+                        // value:"http"
                     },{
-                        key:"authHost",
-                        value:"27.122.139.210"
+                        key:"authHost"
+                        // value:"27.122.139.210"
                     },{
-                        key:"authPort",
-                        value:"8050"
+                        key:"authPort"
+                        // value:"8050"
                     },{
-                        key:"authContext",
-                        value:"/fo/cu"
+                        key:"authContext"
+                        // value:"/fo/cu"
                     }]
                 }
             })
@@ -164,12 +164,11 @@ const generateCollectionFromJson = function (author, swaggerJson, group) {
 
     var pmanCollection =
         swag2pman.convertSwagger()
-            // .fromJson(JSON.stringify(swaggerJson))
             .fromJson(swaggerJson)
             .toPostmanCollection({
-                globalHeaders:[
-                    "Authorization:{{tokenType}} {{jwt}}"
-                ],
+                // globalHeaders:[
+                //     "Authorization:{{tokenType}} {{jwt}}"
+                // ],
                 prettyPrint: true
             });
 
@@ -183,7 +182,8 @@ const generateCollectionFromJson = function (author, swaggerJson, group) {
 
     // var group = pmanCollection.name;
     pmanCollection.name = author + '_' + pmanCollection.name;
-    pmanCollection.description = '@author ' + author + '\n' + '@group ' + group;
+    // pmanCollection.description = '@author ' + author + '\n' + '@group ' + group;
+    pmanCollection.description = '@author ' + author;
     pmanCollection.events = [{
         "listen": "prerequest",
         "script": {
