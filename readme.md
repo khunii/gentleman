@@ -16,7 +16,7 @@
 
 ```bash
 # 1. clone this repository
-git clone https://magoktqa.net:9443/tqa/gentleman.git
+git clone -b ucube --single-branch https://magoktqa.net:9443/tqa/gentleman.git
 
 # 2. clone된 폴더로 이동
 cd 내폴더명(예: gentleman)
