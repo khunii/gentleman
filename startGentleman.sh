@@ -11,3 +11,4 @@ echo "Kill process"
 kill -9 $PID
 kill -9 `ps -ef | grep ${workspace} | grep -v grep | awk '{print $2}'`
 fi
+npm start

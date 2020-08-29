@@ -11,8 +11,8 @@
   "bin": {
     "app": "./bin/www.js"
   },
-  "pkg":{
-    "assets":[
+  "pkg": {
+    "assets": [
       "views/**/*",
       "public/**/*"
     ]
