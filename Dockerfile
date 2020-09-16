@@ -1,4 +1,7 @@
 FROM node:12.18.3
+LABEL maintainer="Koon, Choi"
+LABEL email="koon0902@gmail.com"
+
 #앱 디렉토리 생성
 WORKDIR /usr/src/app
 # 앱 의존성 설치
